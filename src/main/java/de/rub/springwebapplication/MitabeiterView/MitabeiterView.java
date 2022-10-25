@@ -173,8 +173,25 @@ public class MitabeiterView extends Div {
 
                     buttons[l].addClickListener(Click -> dataBaseUtils.editInfoLDAP(l, textFields[l].getValue()));
                 }
-
             }
+
+            MenuItem LDAP_ADD = subItems.addItem("LDAP_ADD_ID");
+            LDAP_ADD.addClickListener(event ->
+            {
+                for (int j = 0; j < buttons.length; j++) {
+                    textFields[j].setVisible(false);
+                    buttons[j].setVisible(false);
+                }
+                textFields[buttons.length-1].setVisible(true);
+                buttons[buttons.length-1].setVisible(true);
+                textFields[buttons.length-1].setValue("");
+                textFields[buttons.length-1].setPlaceholder("");
+            });
+
+            buttons[buttons.length-1].addClickListener(Click -> {
+                dataBaseUtils.addNewIdAndName(textFields[textFields.length-1].getValue());
+                Notification.show("Eintrag hinzugefügt");
+            });
 
             content.add(LDAP_EDIT, options);
             for (int i = 0; i < buttons.length; i++)
