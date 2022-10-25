@@ -35,7 +35,6 @@ public class MitabeiterView extends Div {
     private final Tab Logout;
     private final VerticalLayout content;
 
-
     public MitabeiterView() throws IOException {
 
         final WebBrowser webBrowser = UI.getCurrent().getSession().getBrowser();
