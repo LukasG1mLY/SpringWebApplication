@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.List;
-
 @PageTitle("MitabeiterView")
 @Route("MitabeiterView")
 
