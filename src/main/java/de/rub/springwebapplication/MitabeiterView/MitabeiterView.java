@@ -124,35 +124,12 @@ public class MitabeiterView extends Div {
                 buttons[l] = new Button("Bestätigen");//Initialisierung von Buttons
                 textFields[l] = new TextField();//Initialisierung von TextFeldern
 
-                buttons[l].setVisible(false);
-                buttons[l].setWidthFull();
-
                 textFields[l].setVisible(false);
                 textFields[l].setWidthFull();
 
-                if (i == buttons.length-1)
-                {
-                    MenuItem LDAP_ADD = subItems.addItem("LDAP_ADD_ID");
-                    LDAP_ADD.addClickListener(event ->
-                    {
-                        for (int j = 0; j < buttons.length; j++) {
-                            buttons[j].setVisible(false);
-                            textFields[j].setVisible(false);
-                        }
-                        buttons[buttons.length-1].setVisible(true);
-                        textFields[buttons.length-1].setVisible(true);
-                        textFields[buttons.length-1].setValue("");
-                        textFields[buttons.length-1].setPlaceholder(allIdsAndNames.get(buttons.length-1)[1]);
-                    });
+                buttons[l].setVisible(false);
 
-                    textFields[buttons.length-1] = new TextField();
-                    buttons[buttons.length-1] = new Button("Bestätigen");
-                    buttons[buttons.length-1].addClickListener(Click -> {
-                        dataBaseUtils.addNewIdAndName(textFields[textFields.length-1].getValue());
-                        Notification.show("Eintrag hinzugefügt");
-                    });
-                }
-                else
+                if (i != buttons.length-1)
                 {
                     textFields[l].setValue(allIdsAndNames.get(l)[1]);
 
@@ -161,11 +138,13 @@ public class MitabeiterView extends Div {
                     LDAP_ID.addClickListener(event -> {
 
                         for (int j = 0; j < buttons.length; j++) {
-                            buttons[j].setVisible(false);
                             textFields[j].setVisible(false);
+                            buttons[j].setVisible(false);
+
                         }
-                        buttons[l].setVisible(true);
+
                         textFields[l].setVisible(true);
+                        buttons[l].setVisible(true);
                         textFields[l].setValue("");
                         textFields[l].setPlaceholder(allIdsAndNames.get(l)[1]);
 
@@ -196,7 +175,7 @@ public class MitabeiterView extends Div {
             content.add(LDAP_EDIT, options);
             for (int i = 0; i < buttons.length; i++)
             {
-                content.add(buttons[i], textFields[i]);
+                content.add(textFields[i], buttons[i]);
             }
         }
     }
