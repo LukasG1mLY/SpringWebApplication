@@ -22,30 +22,12 @@ import de.rub.springwebapplication.Login.Redirect;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.List;
 
 @PageTitle("MitabeiterView")
 @Route("MitabeiterView")
 
-    public class MitabeiterView extends Div {
-    private TextField ID_1;
-    private Button ID_1_Button;
-    private TextField ID_2;
-    private Button ID_2_Button;
-    private TextField ID_3;
-    private Button ID_3_Button;
-    private TextField ID_4;
-    private Button ID_4_Button;
-    private TextField ID_5;
-    private Button ID_5_Button;
-    private TextField ID_6;
-    private Button ID_6_Button;
-    private TextField ID_7;
-    private Button ID_7_Button;
-    private TextField ID_8;
-    private Button ID_8_Button;
-    public TextField ID_ADD;
-    public Button ID_ADD_Button;
-
+public class MitabeiterView extends Div {
 
     public DataBaseUtils dataBaseUtils;
     private final Tab Startseite_WebClient;
@@ -71,15 +53,6 @@ import java.io.IOException;
         setContent(tabs.getSelectedTab());
 
         add(tabs, content);
-        ID_1 = null;
-        ID_2 = null;
-        ID_3 = null;
-        ID_4 = null;
-        ID_5 = null;
-        ID_6 = null;
-        ID_8 = null;
-        ID_7 = null;
-        ID_ADD = null;
     }
     private void setContent(@NotNull Tab tab) {
         content.removeAll();

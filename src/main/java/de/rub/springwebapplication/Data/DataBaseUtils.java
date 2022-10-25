@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DataBaseUtils extends SQLUtils {
@@ -81,234 +83,43 @@ public class DataBaseUtils extends SQLUtils {
         }
     }
 
-    public String getInfoLDAP_ID_1() {
-
-        ResultSet rs;
-
-        try {
-
-            rs = onQuery("SELECT GRP_NAME FROM LDAP_GRP WHERE ID = 1");
+    public void addNewIdAndName(String name)
+    {
+        try
+        {
+            ResultSet rs = onQuery("SELECT MAX(ID) FROM LDAP_GRP");
             rs.next();
-            return rs.getString("GRP_NAME");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Failed onQuery LDAP");
-            return "";
+            int newId = rs.getInt("MAX(ID)") + 1;
+            onExecute("INSERT INTO LDAP_GRP VALUES(?,?)", newId, name);
         }
-
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public String getInfoLDAP_ID_2() {
-
+    public List<String[]> getAllInfos() {
         ResultSet rs;
-
+        List<String[]> list = new ArrayList<>();
         try {
-
-            rs = onQuery("SELECT GRP_NAME FROM LDAP_GRP WHERE ID = 2");
-            rs.next();
-            return rs.getString("GRP_NAME");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Failed onQuery LDAP");
-            return "";
+            rs = onQuery("SELECT ID,GRP_NAME FROM LDAP_GRP ORDER BY ID");
+            while (rs.next()) {
+                String[] idAndName = {rs.getString("ID"), rs.getString("GRP_NAME")};
+                list.add(idAndName);
+            }
         }
-
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
-    public String getInfoLDAP_ID_3() {
-
-        ResultSet rs;
-
+    public void editInfoLDAP(int id, String text) {
         try {
-
-            rs = onQuery("SELECT GRP_NAME FROM LDAP_GRP WHERE ID = 3");
-            rs.next();
-            return rs.getString("GRP_NAME");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Failed onQuery LDAP");
-            return "";
-        }
-
-    }
-
-    public String getInfoLDAP_ID_4() {
-
-        ResultSet rs;
-
-        try {
-
-            rs = onQuery("SELECT GRP_NAME FROM LDAP_GRP WHERE ID = 4");
-            rs.next();
-            return rs.getString("GRP_NAME");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Failed onQuery LDAP");
-            return "";
-        }
-
-    }
-
-    public String getInfoLDAP_ID_5() {
-
-        ResultSet rs;
-
-        try {
-
-            rs = onQuery("SELECT GRP_NAME FROM LDAP_GRP WHERE ID = 5");
-            rs.next();
-            return rs.getString("GRP_NAME");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Failed onQuery LDAP");
-            return "";
-        }
-
-    }
-
-    public String getInfoLDAP_ID_6() {
-
-        ResultSet rs;
-
-        try {
-
-            rs = onQuery("SELECT GRP_NAME FROM LDAP_GRP WHERE ID = 6");
-            rs.next();
-            return rs.getString("GRP_NAME");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Failed onQuery LDAP");
-            return "";
-        }
-
-    }
-
-    public String getInfoLDAP_ID_7() {
-
-        ResultSet rs;
-
-        try {
-
-            rs = onQuery("SELECT GRP_NAME FROM LDAP_GRP WHERE ID = 7");
-            rs.next();
-            return rs.getString("GRP_NAME");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Failed onQuery LDAP");
-            return "";
-        }
-
-    }
-
-    public String getInfoLDAP_ID_8() {
-
-        ResultSet rs;
-
-        try {
-
-            rs = onQuery("SELECT GRP_NAME FROM LDAP_GRP WHERE ID = 8");
-            rs.next();
-            return rs.getString("GRP_NAME");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Failed onQuery LDAP");
-            return "";
-        }
-
-    }
-
-    public void editInfoLDAP_ID_1(String text) {
-        try {
-            onExecute("UPDATE LDAP_GRP SET GRP_NAME =? WHERE ID = '1'", text);
+            onExecute("UPDATE LDAP_GRP SET GRP_NAME = ? WHERE ID = ?", text, id);
             System.out.println("Changed Info LDAP_ID 1");
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Failed onExecute by LDAP_ID_1");
-        }
-
-    }
-
-    public void editInfoLDAP_ID_2(String text) {
-        try {
-            onExecute("UPDATE LDAP_GRP SET GRP_NAME =? WHERE ID = '2'", text);
-            System.out.println("Changed Info LDAP_ID 2");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Failed onExecute by LDAP_ID_2");
-        }
-
-    }
-
-    public void editInfoLDAP_ID_3(String text) {
-        try {
-            onExecute("UPDATE LDAP_GRP SET GRP_NAME =? WHERE ID = '3'", text);
-            System.out.println("Changed Info LDAP_ID 3");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Failed onExecute by LDAP_ID_3");
-        }
-
-    }
-
-    public void editInfoLDAP_ID_4(String text) {
-        try {
-            onExecute("UPDATE LDAP_GRP SET GRP_NAME =? WHERE ID = '4'", text);
-            System.out.println("Changed Info LDAP_ID 4");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Failed onExecute by LDAP_ID_4");
-        }
-
-    }
-
-    public void editInfoLDAP_ID_5(String text) {
-        try {
-            onExecute("UPDATE LDAP_GRP SET GRP_NAME =? WHERE ID = '5'", text);
-            System.out.println("Changed Info LDAP_ID 5");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Failed onExecute by LDAP_ID_5");
-        }
-
-    }
-
-    public void editInfoLDAP_ID_6(String text) {
-        try {
-            onExecute("UPDATE LDAP_GRP SET GRP_NAME =? WHERE ID = '6'", text);
-            System.out.println("Changed Info LDAP_ID 6");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Failed onExecute by LDAP_ID_6");
-        }
-
-    }
-
-    public void editInfoLDAP_ID_7(String text) {
-        try {
-            onExecute("UPDATE LDAP_GRP SET GRP_NAME =? WHERE ID = '7'", text);
-            System.out.println("Changed Info LDAP_ID 7");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Failed onExecute by LDAP_ID_7");
-        }
-
-    }
-
-    public void editInfoLDAP_ID_8(String text) {
-        try {
-            onExecute("UPDATE LDAP_GRP SET GRP_NAME =? WHERE ID = '8'", text);
-            System.out.println("Changed Info LDAP_ID 8");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Failed onExecute by LDAP_ID_8");
         }
 
     }
