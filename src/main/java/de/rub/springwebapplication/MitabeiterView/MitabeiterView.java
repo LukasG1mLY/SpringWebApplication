@@ -141,336 +141,74 @@ import java.io.IOException;
             MenuItem options = LDAP_EDIT.addItem("Change LDAP Values");
             SubMenu subItems = options.getSubMenu();
 
-            MenuItem LDAP_ID_1 = subItems.addItem("LDAP_ID_1");
-            MenuItem LDAP_ID_2 = subItems.addItem("LDAP_ID_2");
-            MenuItem LDAP_ID_3 = subItems.addItem("LDAP_ID_3");
-            MenuItem LDAP_ID_4 = subItems.addItem("LDAP_ID_4");
-            MenuItem LDAP_ID_5 = subItems.addItem("LDAP_ID_5");
-            MenuItem LDAP_ID_6 = subItems.addItem("LDAP_ID_6");
-            MenuItem LDAP_ID_7 = subItems.addItem("LDAP_ID_7");
-            MenuItem LDAP_ID_8 = subItems.addItem("LDAP_ID_8");
-            MenuItem LDAP_ADD_ID = subItems.addItem("LDAP_ADD_ID");
-
-            ID_1_Button = new Button("Bestätigen");
-            ID_2_Button = new Button("Bestätigen");
-            ID_3_Button = new Button("Bestätigen");
-            ID_4_Button = new Button("Bestätigen");
-            ID_5_Button = new Button("Bestätigen");
-            ID_6_Button = new Button("Bestätigen");
-            ID_7_Button = new Button("Bestätigen");
-            ID_8_Button = new Button("Bestätigen");
-            ID_ADD_Button = new Button("Bestätigen");
-
-            ID_1_Button.setVisible(false);
-            ID_2_Button.setVisible(false);
-            ID_3_Button.setVisible(false);
-            ID_4_Button.setVisible(false);
-            ID_5_Button.setVisible(false);
-            ID_6_Button.setVisible(false);
-            ID_7_Button.setVisible(false);
-            ID_8_Button.setVisible(false);
-            ID_ADD_Button.setVisible(false);
+            List<String[]> allIdsAndNames = dataBaseUtils.getAllInfos();
+            Button[] buttons = new Button[allIdsAndNames.size() +1];//Erstellt ein Array aus Buttons für so viele Rows wie Verhanden +1 Button für ADD_LDAP
+            TextField[] textFields = new TextField[allIdsAndNames.size() +1];//Erstellt ein Array aus TextFeldern für so viele Rows wie Verhanden +1 Textfeld für ADD_LDAP
 
 
+            for (int i = 0; i < buttons.length; i++) //Für jeden Button u.o Textfeld
+            {
+                final int l = i; //Gleichzusetzen mit i
+                buttons[l] = new Button("Bestätigen");//Initialisierung von Buttons
+                textFields[l] = new TextField();//Initialisierung von TextFeldern
 
-            ID_1 = new TextField("LDAP_ID_1");
-            ID_2 = new TextField("LDAP_ID_2");
-            ID_3 = new TextField("LDAP_ID_3");
-            ID_4 = new TextField("LDAP_ID_4");
-            ID_5 = new TextField("LDAP_ID_5");
-            ID_6 = new TextField("LDAP_ID_6");
-            ID_7 = new TextField("LDAP_ID_7");
-            ID_8 = new TextField("LDAP_ID_8");
-            ID_ADD = new TextField("LDAP_ADD_ID");
+                buttons[l].setVisible(false);
+                buttons[l].setWidthFull();
 
+                textFields[l].setVisible(false);
+                textFields[l].setWidthFull();
 
-            ID_1.setVisible(false);
-            ID_2.setVisible(false);
-            ID_3.setVisible(false);
-            ID_4.setVisible(false);
-            ID_5.setVisible(false);
-            ID_6.setVisible(false);
-            ID_7.setVisible(false);
-            ID_8.setVisible(false);
-            ID_ADD.setVisible(false);
+                if (i == buttons.length-1)
+                {
+                    MenuItem LDAP_ADD = subItems.addItem("LDAP_ADD_ID");
+                    LDAP_ADD.addClickListener(event ->
+                    {
+                        for (int j = 0; j < buttons.length; j++) {
+                            buttons[j].setVisible(false);
+                            textFields[j].setVisible(false);
+                        }
+                        buttons[buttons.length-1].setVisible(true);
+                        textFields[buttons.length-1].setVisible(true);
+                        textFields[buttons.length-1].setValue("");
+                        textFields[buttons.length-1].setPlaceholder(allIdsAndNames.get(buttons.length-1)[1]);
+                    });
 
-            ID_1.setWidthFull();
-            ID_2.setWidthFull();
-            ID_3.setWidthFull();
-            ID_4.setWidthFull();
-            ID_5.setWidthFull();
-            ID_6.setWidthFull();
-            ID_7.setWidthFull();
-            ID_8.setWidthFull();
-            ID_ADD.setWidthFull();
+                    textFields[buttons.length-1] = new TextField();
+                    buttons[buttons.length-1] = new Button("Bestätigen");
+                    buttons[buttons.length-1].addClickListener(Click -> {
+                        dataBaseUtils.addNewIdAndName(textFields[textFields.length-1].getValue());
+                        Notification.show("Eintrag hinzugefügt");
+                    });
+                }
+                else
+                {
+                    textFields[l].setValue(allIdsAndNames.get(l)[1]);
 
-            ID_1.setPlaceholder(dataBaseUtils.getInfoLDAP_ID_1());
-            ID_2.setPlaceholder(dataBaseUtils.getInfoLDAP_ID_2());
-            ID_3.setPlaceholder(dataBaseUtils.getInfoLDAP_ID_3());
-            ID_4.setPlaceholder(dataBaseUtils.getInfoLDAP_ID_4());
-            ID_5.setPlaceholder(dataBaseUtils.getInfoLDAP_ID_5());
-            ID_6.setPlaceholder(dataBaseUtils.getInfoLDAP_ID_6());
-            ID_7.setPlaceholder(dataBaseUtils.getInfoLDAP_ID_7());
-            ID_8.setPlaceholder(dataBaseUtils.getInfoLDAP_ID_8());
+                    MenuItem LDAP_ID = subItems.addItem("LDAP_ID_"+allIdsAndNames.get(l)[0]);
 
-            ID_1.setHelperText(dataBaseUtils.getInfoLDAP_ID_1());
-            ID_2.setHelperText(dataBaseUtils.getInfoLDAP_ID_2());
-            ID_3.setHelperText(dataBaseUtils.getInfoLDAP_ID_3());
-            ID_4.setHelperText(dataBaseUtils.getInfoLDAP_ID_4());
-            ID_5.setHelperText(dataBaseUtils.getInfoLDAP_ID_5());
-            ID_6.setHelperText(dataBaseUtils.getInfoLDAP_ID_6());
-            ID_7.setHelperText(dataBaseUtils.getInfoLDAP_ID_7());
-            ID_8.setHelperText(dataBaseUtils.getInfoLDAP_ID_8());
-            ID_ADD.setHelperText("Füge eine neue ID in die Datenbank hinzu");
+                    LDAP_ID.addClickListener(event -> {
 
-            LDAP_ID_1.addClickListener(event -> {
+                        for (int j = 0; j < buttons.length; j++) {
+                            buttons[j].setVisible(false);
+                            textFields[j].setVisible(false);
+                        }
+                        buttons[l].setVisible(true);
+                        textFields[l].setVisible(true);
+                        textFields[l].setValue("");
+                        textFields[l].setPlaceholder(allIdsAndNames.get(l)[1]);
 
-                ID_1.setVisible(true);
-                ID_2.setVisible(false);
-                ID_3.setVisible(false);
-                ID_4.setVisible(false);
-                ID_5.setVisible(false);
-                ID_6.setVisible(false);
-                ID_7.setVisible(false);
-                ID_8.setVisible(false);
-                ID_ADD.setVisible(false);
+                    });
 
-                ID_1_Button.setVisible(true);
-                ID_2_Button.setVisible(false);
-                ID_3_Button.setVisible(false);
-                ID_4_Button.setVisible(false);
-                ID_5_Button.setVisible(false);
-                ID_6_Button.setVisible(false);
-                ID_7_Button.setVisible(false);
-                ID_8_Button.setVisible(false);
-                ID_ADD_Button.setVisible(false);
+                    buttons[l].addClickListener(Click -> dataBaseUtils.editInfoLDAP(l, textFields[l].getValue()));
+                }
 
+            }
 
-
-
-                ID_1_Button.addClickListener(Click -> dataBaseUtils.editInfoLDAP_ID_1(ID_1.getValue()));
-
-            });
-
-            LDAP_ID_2.addClickListener(event -> {
-
-                ID_1.setVisible(false);
-                ID_2.setVisible(true);
-                ID_3.setVisible(false);
-                ID_4.setVisible(false);
-                ID_5.setVisible(false);
-                ID_6.setVisible(false);
-                ID_7.setVisible(false);
-                ID_8.setVisible(false);
-                ID_ADD.setVisible(false);
-
-                ID_1_Button.setVisible(false);
-                ID_2_Button.setVisible(true);
-                ID_3_Button.setVisible(false);
-                ID_4_Button.setVisible(false);
-                ID_5_Button.setVisible(false);
-                ID_6_Button.setVisible(false);
-                ID_7_Button.setVisible(false);
-                ID_8_Button.setVisible(false);
-                ID_ADD_Button.setVisible(false);
-
-                ID_2_Button.addClickListener(Click -> dataBaseUtils.editInfoLDAP_ID_2(ID_2.getValue()));
-
-            });
-
-            LDAP_ID_3.addClickListener(event -> {
-
-                ID_1.setVisible(false);
-                ID_2.setVisible(false);
-                ID_3.setVisible(true);
-                ID_4.setVisible(false);
-                ID_5.setVisible(false);
-                ID_6.setVisible(false);
-                ID_7.setVisible(false);
-                ID_8.setVisible(false);
-                ID_ADD.setVisible(false);
-
-                ID_1_Button.setVisible(false);
-                ID_2_Button.setVisible(false);
-                ID_3_Button.setVisible(true);
-                ID_4_Button.setVisible(false);
-                ID_5_Button.setVisible(false);
-                ID_6_Button.setVisible(false);
-                ID_7_Button.setVisible(false);
-                ID_8_Button.setVisible(false);
-                ID_ADD_Button.setVisible(false);
-
-                ID_3_Button.addClickListener(Click -> dataBaseUtils.editInfoLDAP_ID_3(ID_3.getValue()));
-
-            });
-
-            LDAP_ID_4.addClickListener(event -> {
-
-                ID_1.setVisible(false);
-                ID_2.setVisible(false);
-                ID_3.setVisible(false);
-                ID_4.setVisible(true);
-                ID_5.setVisible(false);
-                ID_6.setVisible(false);
-                ID_7.setVisible(false);
-                ID_8.setVisible(false);
-                ID_ADD.setVisible(false);
-
-                ID_1_Button.setVisible(false);
-                ID_2_Button.setVisible(false);
-                ID_3_Button.setVisible(false);
-                ID_4_Button.setVisible(true);
-                ID_5_Button.setVisible(false);
-                ID_6_Button.setVisible(false);
-                ID_7_Button.setVisible(false);
-                ID_8_Button.setVisible(false);
-                ID_ADD_Button.setVisible(false);
-
-                ID_4_Button.addClickListener(Click -> dataBaseUtils.editInfoLDAP_ID_4(ID_4.getValue()));
-
-            });
-
-            LDAP_ID_5.addClickListener(event -> {
-
-                ID_1.setVisible(false);
-                ID_2.setVisible(false);
-                ID_3.setVisible(false);
-                ID_4.setVisible(false);
-                ID_5.setVisible(true);
-                ID_6.setVisible(false);
-                ID_7.setVisible(false);
-                ID_8.setVisible(false);
-                ID_ADD.setVisible(false);
-
-                ID_1_Button.setVisible(false);
-                ID_2_Button.setVisible(false);
-                ID_3_Button.setVisible(false);
-                ID_4_Button.setVisible(false);
-                ID_5_Button.setVisible(true);
-                ID_6_Button.setVisible(false);
-                ID_7_Button.setVisible(false);
-                ID_8_Button.setVisible(false);
-                ID_ADD_Button.setVisible(false);
-
-                ID_5_Button.addClickListener(Click -> dataBaseUtils.editInfoLDAP_ID_5(ID_5.getValue()));
-
-            });
-
-            LDAP_ID_6.addClickListener(event -> {
-
-                ID_1.setVisible(false);
-                ID_2.setVisible(false);
-                ID_3.setVisible(false);
-                ID_4.setVisible(false);
-                ID_5.setVisible(false);
-                ID_6.setVisible(true);
-                ID_7.setVisible(false);
-                ID_8.setVisible(false);
-                ID_ADD.setVisible(false);
-
-                ID_1_Button.setVisible(false);
-                ID_2_Button.setVisible(false);
-                ID_3_Button.setVisible(false);
-                ID_4_Button.setVisible(false);
-                ID_5_Button.setVisible(false);
-                ID_6_Button.setVisible(true);
-                ID_7_Button.setVisible(false);
-                ID_8_Button.setVisible(false);
-                ID_ADD_Button.setVisible(false);
-
-                ID_6_Button.addClickListener(Click -> dataBaseUtils.editInfoLDAP_ID_6(ID_6.getValue()));
-
-            });
-
-            LDAP_ID_7.addClickListener(event -> {
-
-                ID_1.setVisible(false);
-                ID_2.setVisible(false);
-                ID_3.setVisible(false);
-                ID_4.setVisible(false);
-                ID_5.setVisible(false);
-                ID_6.setVisible(false);
-                ID_7.setVisible(true);
-                ID_8.setVisible(false);
-                ID_ADD.setVisible(false);
-
-                ID_1_Button.setVisible(false);
-                ID_2_Button.setVisible(false);
-                ID_3_Button.setVisible(false);
-                ID_4_Button.setVisible(false);
-                ID_5_Button.setVisible(false);
-                ID_6_Button.setVisible(false);
-                ID_7_Button.setVisible(true);
-                ID_8_Button.setVisible(false);
-                ID_ADD_Button.setVisible(false);
-
-                ID_7_Button.addClickListener(Click -> dataBaseUtils.editInfoLDAP_ID_7(ID_7.getValue()));
-
-            });
-
-            LDAP_ID_8.addClickListener(event -> {
-
-                ID_1.setVisible(false);
-                ID_2.setVisible(false);
-                ID_3.setVisible(false);
-                ID_4.setVisible(false);
-                ID_5.setVisible(false);
-                ID_6.setVisible(false);
-                ID_7.setVisible(false);
-                ID_8.setVisible(true);
-                ID_ADD.setVisible(false);
-
-                ID_1_Button.setVisible(false);
-                ID_2_Button.setVisible(false);
-                ID_3_Button.setVisible(false);
-                ID_4_Button.setVisible(false);
-                ID_5_Button.setVisible(false);
-                ID_6_Button.setVisible(false);
-                ID_7_Button.setVisible(false);
-                ID_8_Button.setVisible(true);
-                ID_ADD_Button.setVisible(false);
-
-                ID_8_Button.addClickListener(Click -> dataBaseUtils.editInfoLDAP_ID_8(ID_8.getValue()));
-            });
-
-            LDAP_ADD_ID.addClickListener(event -> {
-
-
-
-                ID_1.setVisible(false);
-                ID_2.setVisible(false);
-                ID_3.setVisible(false);
-                ID_4.setVisible(false);
-                ID_5.setVisible(false);
-                ID_6.setVisible(false);
-                ID_7.setVisible(false);
-                ID_8.setVisible(false);
-                ID_ADD.setVisible(true);
-                ID_ADD.setPlaceholder("Diese Funktion Gibt es leider noch nicht");
-
-                ID_1_Button.setVisible(false);
-                ID_2_Button.setVisible(false);
-                ID_3_Button.setVisible(false);
-                ID_4_Button.setVisible(false);
-                ID_5_Button.setVisible(false);
-                ID_6_Button.setVisible(false);
-                ID_7_Button.setVisible(false);
-                ID_8_Button.setVisible(false);
-                ID_ADD_Button.setVisible(true);
-
-                ID_ADD_Button.addClickListener(Click -> Notification.show("Noch gibt es diese Möglichkeit leider nicht"));
-
-            });
-
-            content.add(LDAP_EDIT, options, ID_1, ID_1_Button,
-                                            ID_2, ID_2_Button,
-                                            ID_3, ID_3_Button,
-                                            ID_4, ID_4_Button,
-                                            ID_5, ID_5_Button,
-                                            ID_6, ID_6_Button,
-                                            ID_7, ID_7_Button,
-                                            ID_8, ID_8_Button,
-                                            ID_ADD, ID_ADD_Button);
+            content.add(LDAP_EDIT, options);
+            for (int i = 0; i < buttons.length; i++)
+            {
+                content.add(buttons[i], textFields[i]);
+            }
         }
     }
 
