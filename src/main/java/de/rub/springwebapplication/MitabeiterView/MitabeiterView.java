@@ -1,6 +1,8 @@
 package de.rub.springwebapplication.MitabeiterView;
 
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
@@ -104,16 +106,13 @@ public class MitabeiterView extends Div {
             content.add(Change_Info_Text_Studenten, Confirm_Changed_Text_Value_For_Studenten);
 
         }
-        else if (tab.equals(Logout)){
-            UI.getCurrent().navigate(Redirect.class);
-
-        }
         else if (tab.equals(LDAP)){
+            content.setAlignItems(FlexComponent.Alignment.CENTER);
 
             //Erstellt die Komponenten für den jeweiligen Tab.
 
             MenuBar LDAP_EDIT = new MenuBar();
-            MenuItem options = LDAP_EDIT.addItem("Change LDAP Values");
+            MenuItem options = LDAP_EDIT.addItem("LDAP Verzeichnisse");
             SubMenu subItems = options.getSubMenu();
 
             //Erstellt eine Liste mit allen Einträgen in der Datenbank und mit denen die noch dazukommen
@@ -133,8 +132,8 @@ public class MitabeiterView extends Div {
             //für jeden bereits vorhandenen Eintrag in der DatenBank
             //einen Button und ein Textfeld zu erstellen
             //damit man diesen Eintrag auf der Weboberfläche bearbeiten kann
-            for (int i = 0; i < buttons.length; i++) //Für jeden Button u.o Textfeld
-            {
+            //für jeden Button u.o Textfeld
+            for (int i = 0; i < buttons.length; i++) {
                 //Gleichsetzen von l mit i da l = i sein soll
                 //dies dient dazu, dass das zu erstellende Textfeld,
                 //der zu erstellende button genau die gleichen Erscheinungen haben soll
@@ -151,19 +150,21 @@ public class MitabeiterView extends Div {
 
                 //Hier wird bestimmt was für besondere Erscheinungs-Variablen
                 //ein Textfeld bzw. ein Button haben soll.
-                textFields[l].setVisible(false);
-                textFields[l].setWidthFull();
+                textFields[l].setVisible(true);
+                textFields[l].setReadOnly(true);
+                textFields[l].setWidth(40, Unit.PERCENTAGE);
 
                 //Nehmen wir diesen Komponenten als beispiel:
                 //wenn wir diesen Button[l] erstellen, dann wird dieser Automatisch vom code sichtbar gemacht,
                 //da wir den Button jedoch nur zu einem bestimmten Event(Im demfall ein Selection-event)
                 //sichtbar haben wollen sagen wir der Methode hier, dass sie den Button hier verstecken soll.
                 buttons[l].setVisible(false);
+                buttons[l].addClickShortcut(Key.ENTER);
 
                 //Bei diesem if Statement passiert die eigentliche Magie,
                 //sobald dieses IF-Statement getriggert wird, sorgt es dafür,
-                //dass jeder schon vorhanden ROW jeweils ein Button und Textfeld zugeordnet wird
-                //Des Weiteren wird in diesem If-Statement der jeweilige Inhalt aus der Datenbank in jedes Textfeld geschrieben.
+                //dass jedem erstellten Textfeld
+                //der jeweilige Inhalt aus der Datenbank in jedes Textfeld geschrieben wird.
                 //Damit stellt sich bestimmt die Frage wie weiß denn der Code wie wo was eingesetz wird
                 //Ganz einfach! Dieser Code basiert auf Java und da java eine Sprache ist,
                 //die von Oben nach unten Arbeitet, liest der Code einfach nur jede Spalte aus fügt sie in ein textfeld ein und geht dann zur nächsten
@@ -172,54 +173,102 @@ public class MitabeiterView extends Div {
                 //springt er mit dem befehl rs.next zur nächten ROW in der Datenbank
                 if (i != buttons.length-1)
                 {
-                    textFields[l].setValue(allIdsAndNames.get(l)[1]);
+                    MenuItem LDAP_ID = subItems.addItem("Verzeichnis_" + allIdsAndNames.get(l)[0]);
 
-                    MenuItem LDAP_ID = subItems.addItem("LDAP_ID_"+allIdsAndNames.get(l)[0]);
+                    textFields[l].setValue(allIdsAndNames.get(l)[1]);
+                    textFields[l].setLabel("Verzeichnis_" + allIdsAndNames.get(l)[0]);
+
 
                     LDAP_ID.addClickListener(event -> {
 
                         for (int j = 0; j < buttons.length; j++) {
                             textFields[j].setVisible(false);
                             buttons[j].setVisible(false);
+                            textFields[l].setValue("");
 
                         }
                         //Genauso wie beim Button[l] wird in diesem Click listener der Befehlt setVisible getriggert.
                         textFields[l].setVisible(true);
+                        textFields[l].setReadOnly(false);
                         //Wie zuvor in Line 152-155 beschrieben wird hier der button[l] sichtbar gemacht
                         buttons[l].setVisible(true);
-
-                        textFields[l].setValue("");
                         textFields[l].setPlaceholder(allIdsAndNames.get(l)[1]);
+
+                        textFields[l].addValueChangeListener(e -> {
+
+                            buttons[l].setEnabled(true);
+                            buttons[l].setVisible(true);
+
+
+                        });
 
                     });
 
-                    buttons[l].addClickListener(Click -> dataBaseUtils.editInfoLDAP(l, textFields[l].getValue()));
+                    buttons[l].addClickListener(Click -> {
+                        if (textFields[l].isEmpty()) {
+                            textFields[l].setInvalid(true);
+                            textFields[l].setErrorMessage("Dieses Feld darf NICHT Leer sein !");
+                            textFields[l].setPlaceholder(textFields[l].getValue());
+                            buttons[l].setEnabled(false);
+                        } else {
+                            Notification.show("Wurde geändert");
+                            dataBaseUtils.editInfoLDAP(l, textFields[l].getValue());
+                            textFields[l].setPlaceholder(textFields[l].getValue());
+                            textFields[l].setValue("");
+                            buttons[l].setEnabled(true);
+                        }
+
+
+                    });
+
+
+
                 }
             }
 
-            MenuItem LDAP_ADD = subItems.addItem("LDAP_ADD_ID");
-            LDAP_ADD.addClickListener(event ->
-            {
+            MenuItem LDAP_ADD = subItems.addItem("Hinzufügen");
+
+
+            LDAP_ADD.addClickListener(event -> {
                 for (int j = 0; j < buttons.length; j++) {
                     textFields[j].setVisible(false);
                     buttons[j].setVisible(false);
                 }
-                textFields[buttons.length-1].setVisible(true);
-                buttons[buttons.length-1].setVisible(true);
-                textFields[buttons.length-1].setValue("");
-                textFields[buttons.length-1].setPlaceholder("");
+                textFields[buttons.length - 1].setVisible(true);
+                textFields[buttons.length - 1].setReadOnly(false);
+                textFields[buttons.length - 1].setLabel("Verzeichnis hinzufügen");
+                textFields[buttons.length - 1].setValue("");
+                textFields[buttons.length - 1].setPlaceholder("");
+                textFields[buttons.length - 1].addValueChangeListener(e ->
+                   buttons[buttons.length - 1].setEnabled(true));
+                   buttons[buttons.length - 1].setVisible(true);
+                   buttons[buttons.length - 1].addClickShortcut(Key.ENTER);
+
+                buttons[buttons.length-1].addClickListener(Click -> {
+                    if (textFields[buttons.length - 1].isEmpty()) {
+                        textFields[buttons.length - 1].setInvalid(true);
+                        textFields[buttons.length - 1].setErrorMessage("Dieses Feld darf NICHT Leer sein !");
+                        buttons[buttons.length - 1].setEnabled(false);
+                    }
+                    else {
+                        dataBaseUtils.addNewIdAndName(textFields[textFields.length-1].getValue());
+                        Notification.show("Eintrag hinzugefügt");
+                        textFields[textFields.length-1].setValue("");
+                    }
+
+                });
             });
 
-            buttons[buttons.length-1].addClickListener(Click -> {
-                dataBaseUtils.addNewIdAndName(textFields[textFields.length-1].getValue());
-                Notification.show("Eintrag hinzugefügt");
-            });
 
             content.add(LDAP_EDIT, options);
             for (int i = 0; i < buttons.length; i++)
             {
                 content.add(textFields[i], buttons[i]);
             }
+        }
+        else if (tab.equals(Logout)){
+            UI.getCurrent().navigate(Redirect.class);
+
         }
     }
 

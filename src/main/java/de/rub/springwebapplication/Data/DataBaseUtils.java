@@ -1,5 +1,6 @@
 package de.rub.springwebapplication.Data;
 
+
 import org.ini4j.Wini;
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.util.List;
 public class DataBaseUtils extends SQLUtils {
 
     public DataBaseUtils() throws IOException {
-        Wini ini = new Wini(new File("src/main/resources/application.properties"));
+        Wini ini = new Wini(new File("C:\\Users\\Admin\\Desktop\\Application\\src\\main\\resources\\application.properties"));
 
         String pDatabaseUrl = ini.get("pDatabaseUrl", "spring.datasource.url");
         String pUser = ini.get("pUser", "spring.datasource.username");
@@ -110,14 +111,14 @@ public class DataBaseUtils extends SQLUtils {
         }
         return list;
     }
-
     public void editInfoLDAP(int id, String text) {
+
         try {
-            onExecute("UPDATE LDAP_GRP SET GRP_NAME = ? WHERE ID = ?", text, id);
-            System.out.println("Changed Info LDAP_ID 1");
+            onExecute("UPDATE LDAP_GRP SET GRP_NAME =? WHERE ID =?", text, id + 1);
+            System.out.println("Changed Info LDAP_ID_" + id);
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Failed onExecute by LDAP_ID_1");
+            System.out.println("Failed onExecute by LDAP_ID_" + id);
         }
 
     }
