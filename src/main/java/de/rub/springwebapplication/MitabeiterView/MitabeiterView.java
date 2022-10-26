@@ -32,6 +32,7 @@ public class MitabeiterView extends Div {
     private final Tab Startseite_WebClient;
     private final Tab Bearbeiten;
     private final Tab Logout;
+    private final Tab LDAP;
     private final VerticalLayout content;
 
     public MitabeiterView() throws IOException {
@@ -44,7 +45,7 @@ public class MitabeiterView extends Div {
         Startseite_WebClient = new Tab(VaadinIcon.HOME.create(), new Span("Startseite WebClient"));
         Logout = new Tab(VaadinIcon.ARROW_LEFT.create(), new Span("Logout"));
         Bearbeiten = new Tab(VaadinIcon.EDIT.create(), new Span("Bearbeiten"));
-        Tab LDAP = new Tab("LDAP");
+        LDAP = new Tab(VaadinIcon.EDIT.create(), new Span("LDAP  Liste"));
 
         Tabs tabs = new Tabs(Startseite_WebClient, Bearbeiten, LDAP, Logout);
         tabs.addSelectedChangeListener(event ->  setContent(event.getSelectedTab()));
@@ -107,27 +108,68 @@ public class MitabeiterView extends Div {
             UI.getCurrent().navigate(Redirect.class);
 
         }
-        else {
+        else if (tab.equals(LDAP)){
+
+            //Erstellt die Komponenten für den jeweiligen Tab.
+
             MenuBar LDAP_EDIT = new MenuBar();
             MenuItem options = LDAP_EDIT.addItem("Change LDAP Values");
             SubMenu subItems = options.getSubMenu();
 
+            //Erstellt eine Liste mit allen Einträgen in der Datenbank und mit denen die noch dazukommen
             List<String[]> allIdsAndNames = dataBaseUtils.getAllInfos();
-            Button[] buttons = new Button[allIdsAndNames.size() +1];//Erstellt ein Array aus Buttons für so viele Rows wie Verhanden +1 Button für ADD_LDAP
-            TextField[] textFields = new TextField[allIdsAndNames.size() +1];//Erstellt ein Array aus TextFeldern für so viele Rows wie Verhanden +1 Textfeld für ADD_LDAP
+
+            //Erstellt ein Array aus Buttons für so viele Rows wie Vorhanden
+            //außerdem wird hier zusätzlich noch ein Platzhalter
+            //für die Methode LDAP_ADD freigehalten, sodass beim Erstellen einer neuen ROW in der Datenbank
+            //diese erstell-methode nicht überschrieben wird.(Deshalb das +1)
+            Button[] buttons = new Button[allIdsAndNames.size() +1];
+
+            //Erstellt ein Array aus TextFeldern für so viele Rows wie Verhanden +1 Textfeld für ADD_LDAP
+            TextField[] textFields = new TextField[allIdsAndNames.size() +1];
 
 
+            //Dies ist eine For-Schleife diese Dient dazu
+            //für jeden bereits vorhandenen Eintrag in der DatenBank
+            //einen Button und ein Textfeld zu erstellen
+            //damit man diesen Eintrag auf der Weboberfläche bearbeiten kann
             for (int i = 0; i < buttons.length; i++) //Für jeden Button u.o Textfeld
             {
-                final int l = i; //Gleichzusetzen mit i
-                buttons[l] = new Button("Bestätigen");//Initialisierung von Buttons
-                textFields[l] = new TextField();//Initialisierung von TextFeldern
+                //Gleichsetzen von l mit i da l = i sein soll
+                //dies dient dazu, dass das zu erstellende Textfeld,
+                //der zu erstellende button genau die gleichen Erscheinungen haben soll
+                //wie für die Textfelder/Buttons für [i].
+                //(Einfach ausgedrückt soll der Integer[l] genauso aussehen wie der Integer[i]
+                //aber er soll nicht das Gleiche machen dazu komme ich im nächsten Schritt.
+                final int l = i;
 
+                //Initialisierung von Buttons
+                buttons[l] = new Button("Bestätigen");
+
+                //Initialisierung von TextFeldern
+                textFields[l] = new TextField();
+
+                //Hier wird bestimmt was für besondere Erscheinungs-Variablen
+                //ein Textfeld bzw. ein Button haben soll.
                 textFields[l].setVisible(false);
                 textFields[l].setWidthFull();
 
+                //Nehmen wir diesen Komponenten als beispiel:
+                //wenn wir diesen Button[l] erstellen, dann wird dieser Automatisch vom code sichtbar gemacht,
+                //da wir den Button jedoch nur zu einem bestimmten Event(Im demfall ein Selection-event)
+                //sichtbar haben wollen sagen wir der Methode hier, dass sie den Button hier verstecken soll.
                 buttons[l].setVisible(false);
 
+                //Bei diesem if Statement passiert die eigentliche Magie,
+                //sobald dieses IF-Statement getriggert wird, sorgt es dafür,
+                //dass jeder schon vorhanden ROW jeweils ein Button und Textfeld zugeordnet wird
+                //Des Weiteren wird in diesem If-Statement der jeweilige Inhalt aus der Datenbank in jedes Textfeld geschrieben.
+                //Damit stellt sich bestimmt die Frage wie weiß denn der Code wie wo was eingesetz wird
+                //Ganz einfach! Dieser Code basiert auf Java und da java eine Sprache ist,
+                //die von Oben nach unten Arbeitet, liest der Code einfach nur jede Spalte aus fügt sie in ein textfeld ein und geht dann zur nächsten
+                //dies funktioniert ungefähr so:
+                //Sobald der Code eine Spalte(ROW) in der Datenbank fertig abgelesen und in das bestimmte Textfeld gesetzt hat,
+                //springt er mit dem befehl rs.next zur nächten ROW in der Datenbank
                 if (i != buttons.length-1)
                 {
                     textFields[l].setValue(allIdsAndNames.get(l)[1]);
@@ -141,9 +183,11 @@ public class MitabeiterView extends Div {
                             buttons[j].setVisible(false);
 
                         }
-
+                        //Genauso wie beim Button[l] wird in diesem Click listener der Befehlt setVisible getriggert.
                         textFields[l].setVisible(true);
+                        //Wie zuvor in Line 152-155 beschrieben wird hier der button[l] sichtbar gemacht
                         buttons[l].setVisible(true);
+
                         textFields[l].setValue("");
                         textFields[l].setPlaceholder(allIdsAndNames.get(l)[1]);
 
