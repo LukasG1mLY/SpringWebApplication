@@ -86,10 +86,11 @@ public class DataBaseUtils extends SQLUtils {
     {
         try
         {
-            ResultSet rs = onQuery("SELECT MAX(ID) FROM LDAP_GRP");
+            ResultSet rs = onQuery("SELECT MAX(ID) FROM LDAP_GRP ORDER BY ID");
             rs.next();
             int newId = rs.getInt("MAX(ID)") + 1;
             onExecute("INSERT INTO LDAP_GRP VALUES(?,?)", newId, name);
+            System.out.println("Die ID: " + newId + " wurde zum verzeichnis Hinzugefügt.");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -113,13 +114,26 @@ public class DataBaseUtils extends SQLUtils {
     }
     public void editInfoLDAP(int id, String text) {
 
+
         try {
             onExecute("UPDATE LDAP_GRP SET GRP_NAME =? WHERE ID =?", text, id + 1);
-            System.out.println("Changed Info LDAP_ID_" + id);
+            System.out.println("Changed Info LDAP_ID_" + (id + 1));
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Failed onExecute by LDAP_ID_" + id);
         }
+
+    }
+    public void deleteInfoLDAP(int id)  {
+        try {
+            onExecute("DELETE FROM LDAP_GRP WHERE ID =?", id);
+            System.out.println("Deleted ROW_ " + (id));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Failed to delete ROW_ " + (id));
+        }
+
 
     }
 

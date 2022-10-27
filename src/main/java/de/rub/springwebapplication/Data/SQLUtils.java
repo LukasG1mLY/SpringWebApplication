@@ -42,11 +42,13 @@ public class SQLUtils {
 
     public ResultSet onQuery(String pStatement, Object... pSet) throws SQLException {
         return addStatementVariables(pStatement, pSet).executeQuery();
+
     }
     public void onExecute(String pStatement) throws SQLException {
         con.createStatement().execute(pStatement);
         con.commit();
     }
+
     public void onExecute(String pStatement, Object... pSet) throws SQLException {
         addStatementVariables(pStatement, pSet).execute();
         con.commit();
