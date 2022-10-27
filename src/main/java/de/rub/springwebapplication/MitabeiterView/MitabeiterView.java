@@ -249,11 +249,11 @@ public class MitabeiterView extends Div {
                     dialog[button.length - 1].setWidth(40, Unit.PERCENTAGE);
                     dialog[button.length -1].setHeaderTitle("Verzeichnis hinzufügen");
                     cancel[button.length - 1].setVisible(true);
-                    cancel[button.length - 1].addThemeVariants(ButtonVariant.LUMO_ERROR);
+                    cancel[button.length - 1].addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
                     buttons[button.length - 1].setVisible(true);
                     textFields[button.length - 1].setVisible(true);
                     buttons[buttons.length - 1].setVisible(true);
-                    buttons[buttons.length - 1].addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+                    buttons[buttons.length - 1].addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
                     textFields[buttons.length - 1].setVisible(true);
                     textFields[buttons.length - 1].setReadOnly(false);
                     textFields[button.length - 1].setReadOnly(false);
