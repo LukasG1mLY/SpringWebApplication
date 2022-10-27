@@ -245,7 +245,6 @@ public class MitabeiterView extends Div {
 
                     }
 
-
                     dialog[button.length - 1].open();
                     dialog[button.length - 1].setWidth(40, Unit.PERCENTAGE);
                     dialog[button.length -1].setHeaderTitle("Verzeichnis hinzufügen");
