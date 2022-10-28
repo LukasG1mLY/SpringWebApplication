@@ -25,7 +25,7 @@ public class Redirect extends VerticalLayout {
     public Redirect() throws IOException {
 
 
-        Wini ini = new Wini(new File("C:\\Users\\Admin\\Desktop\\SpringWebApplication\\src\\main\\resources\\application.properties"));
+        Wini ini = new Wini(new File("src/main/resources/application.properties"));
 
         String pDatabaseUrl = ini.get("pDatabaseUrl", "spring.datasource.url");
         String pUser = ini.get("pUser","spring.datasource.username");

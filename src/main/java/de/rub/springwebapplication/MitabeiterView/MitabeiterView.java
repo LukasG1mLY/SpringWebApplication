@@ -125,14 +125,6 @@ public class MitabeiterView extends Div {
             MenuBar LDAP_EDIT = new MenuBar();
             List<String[]> allIdsAndNames = dataBaseUtils.getAllInfos();
 
-            ProgressBar pb = new ProgressBar();
-            pb.setVisible(false);
-            pb.setIndeterminate(true);
-
-            Div progressBarLabel = new Div();
-            progressBarLabel.setVisible(false);
-            progressBarLabel.setText("Erstelle Verzeichnis...");
-
             Button[] buttons = new Button[allIdsAndNames.size() + 1];
             Button[] button = new Button[allIdsAndNames.size() + 1];
             Button[] delete = new Button[allIdsAndNames.size() + 1];
@@ -291,9 +283,6 @@ public class MitabeiterView extends Div {
                         }
                         else {
 
-                            progressBarLabel.setVisible(true);
-                            pb.setVisible(true);
-
 
                             dataBaseUtils.addNewIdAndName(textFields[textFields.length - 1].getValue());
                             textFields[buttons.length - 1].clear();
@@ -331,7 +320,7 @@ public class MitabeiterView extends Div {
                 });
             }
             content.setAlignItems(FlexComponent.Alignment.CENTER);
-            content.add(LDAP_EDIT, LDAP_ADD, LDAP_IDs, LDAP_Overview, pb, progressBarLabel);
+            content.add(LDAP_EDIT, LDAP_ADD, LDAP_IDs, LDAP_Overview);
             for (int i = 0; i < buttons.length; i++) {
                 content.add(textFields[i], buttons[i], button[i], delete[i], cancel[i], dialog[i]);
 
