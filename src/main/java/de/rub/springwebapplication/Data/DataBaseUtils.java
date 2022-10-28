@@ -2,6 +2,7 @@ package de.rub.springwebapplication.Data;
 
 
 import org.ini4j.Wini;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -91,6 +92,7 @@ public class DataBaseUtils extends SQLUtils {
             int newId = rs.getInt("MAX(ID)") + 1;
             onExecute("INSERT INTO LDAP_GRP VALUES(?,?)", newId, name);
             System.out.println("Die ID: " + newId + " wurde zum verzeichnis Hinzugefügt.");
+
         }
         catch (Exception e) {
             e.printStackTrace();
