@@ -15,7 +15,6 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -214,7 +213,6 @@ public class MitabeiterView extends Div {
                                 buttons[l].addClickListener(Click -> {
                                     if (textFields[l].getValue().length() < textFields[l].getMinLength()){
                                         textFields[l].setInvalid(true);
-                                        textFields[l].setErrorMessage("Dieses Feld darf NICHT Leer sein !");
 
                                     } else {
                                         dataBaseUtils.editInfoLDAP(l, textFields[l].getValue());
@@ -223,6 +221,7 @@ public class MitabeiterView extends Div {
                                         UI.getCurrent().getPage().reload();
                                     }
                                 });
+                                textFields[l].setInvalid(false);
                             });
 
                         }
