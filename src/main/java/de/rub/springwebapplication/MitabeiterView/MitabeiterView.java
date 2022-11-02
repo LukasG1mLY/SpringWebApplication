@@ -24,6 +24,9 @@ import de.rub.springwebapplication.Data.DataBaseUtils;
 import de.rub.springwebapplication.Login.Redirect;
 import org.jetbrains.annotations.NotNull;
 
+
+
+
 import java.io.IOException;
 import java.util.List;
 
@@ -133,9 +136,6 @@ public class MitabeiterView extends Div {
             MenuItem LDAP_ADD = LDAP_EDIT.addItem("Hinzufügen");
             MenuItem LDAP_Overview = LDAP_EDIT.addItem("Übersicht");
 
-
-            //Bearbeiten
-            {
                 for (int i = 0; i < buttons.length; i++) {
 
                     final int l = i;
@@ -153,6 +153,7 @@ public class MitabeiterView extends Div {
 
                     textFields[l] = new TextField();
                     textFields[l].setVisible(false);
+                    textFields[l].setWidth(40, Unit.PERCENTAGE);
 
                     dialog[l]  = new Dialog();
 
@@ -182,7 +183,6 @@ public class MitabeiterView extends Div {
                                 textFields[l].setVisible(true);
                                 textFields[l].setReadOnly(false);
                                 textFields[l].setMinLength(1);
-                                textFields[l].setWidth(40, Unit.PERCENTAGE);
                                 textFields[l].setValue(allIdsAndNames.get(l)[1]);
                                 textFields[l].setLabel("Verzeichnis_" + allIdsAndNames.get(l)[0]);
                                 textFields[l].setPlaceholder(allIdsAndNames.get(l)[1]);
@@ -209,30 +209,36 @@ public class MitabeiterView extends Div {
                                 cancel[l].addClickListener(Click -> dialog[l].close());
 
                                 buttons[l].addClickListener(Click -> {
-                                    if (textFields[l].getValue().length() < textFields[l].getMinLength()){
-                                        textFields[l].setInvalid(true);
+                                    if (textFields[l].getValue().length() < textFields[l].getMinLength()) {
+                                        dialog[l].close();
+
                                     } else {
                                         dataBaseUtils.editInfoLDAP(l, textFields[l].getValue());
-                                        textFields[l].setInvalid(false);
                                         textFields[l].setPlaceholder(allIdsAndNames.get(l)[1]);
                                         UI.getCurrent().getPage().reload();
                                     }
                                 });
-                                textFields[l].setInvalid(false);
+                            });
+
+                            LDAP_Overview.addClickListener(event -> {
+
+                                for (int j = 0; j < buttons.length; j++) {
+                                    buttons[j].setVisible(false);
+                                    button[j].setVisible(false);
+
+                                }
+
+                                textFields[l].setVisible(true);
+                                textFields[l].setReadOnly(true);
+                                textFields[l].setValue(allIdsAndNames.get(l)[1]);
+                                textFields[l].setLabel("Verzeichnis " + allIdsAndNames.get(l)[0]);
                             });
 
                         }
                     }
                 }
-            }
-            //Hinzufügen
-            {
-                for (int j = 0; j < buttons.length; j++) {
-                    textFields[j].setVisible(false);
-                    buttons[j].setVisible(false);
-                    button[j].setVisible(false);
 
-                }
+                LDAP_ADD.addClickListener(event -> {
 
                 dialog[buttons.length - 1].setVisible(true);
                 buttons[buttons.length - 1].setVisible(false);
@@ -241,81 +247,47 @@ public class MitabeiterView extends Div {
                 button[buttons.length - 1].setVisible(false);
                 cancel[buttons.length - 1].setVisible(false);
 
+                dialog[buttons.length - 1].open();
+                dialog[buttons.length - 1].setWidth(40, Unit.PERCENTAGE);
+                dialog[buttons.length -1].setHeaderTitle("Verzeichnis hinzufügen");
+                dialog[buttons.length - 1].getFooter().add(buttons[buttons.length - 1]);
+                dialog[buttons.length - 1].getFooter().add(cancel[buttons.length - 1]);
+                dialog[buttons.length - 1].add(textFields[buttons.length - 1]);
 
-                LDAP_ADD.addClickListener(event -> {
+                cancel[buttons.length - 1].setVisible(true);
+                cancel[buttons.length - 1].addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+                cancel[buttons.length - 1].setText("Abbrechen");
 
-                    dialog[buttons.length - 1].open();
-                    dialog[buttons.length - 1].setWidth(40, Unit.PERCENTAGE);
-                    dialog[buttons.length -1].setHeaderTitle("Verzeichnis hinzufügen");
-                    dialog[buttons.length - 1].getFooter().add(buttons[buttons.length - 1]);
-                    dialog[buttons.length - 1].getFooter().add(cancel[buttons.length - 1]);
-                    dialog[buttons.length - 1].add(textFields[buttons.length - 1]);
+                buttons[buttons.length - 1].setVisible(true);
+                buttons[buttons.length - 1].setVisible(true);
+                buttons[buttons.length - 1].addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+                buttons[buttons.length - 1].addClickShortcut(Key.ENTER);
+                buttons[buttons.length - 1].setText("Speichern");
 
-                    cancel[buttons.length - 1].setVisible(true);
-                    cancel[buttons.length - 1].addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
-                    cancel[buttons.length - 1].setText("Abbrechen");
+                textFields[buttons.length - 1].setWidth(100, Unit.PERCENTAGE);
+                textFields[buttons.length - 1].setVisible(true);
+                textFields[buttons.length - 1].setReadOnly(false);
+                textFields[buttons.length - 1].setLabel("Verzeichnis hinzufügen");
+                textFields[buttons.length - 1].setMinLength(1);
 
-                    buttons[buttons.length - 1].setVisible(true);
-                    buttons[buttons.length - 1].setVisible(true);
-                    buttons[buttons.length - 1].addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
-                    buttons[buttons.length - 1].addClickShortcut(Key.ENTER);
-                    buttons[buttons.length - 1].setText("Speichern");
+                buttons[buttons.length - 1].addClickListener(Click -> {
 
-                    textFields[buttons.length - 1].setWidth(100, Unit.PERCENTAGE);
-                    textFields[buttons.length - 1].setVisible(true);
-                    textFields[buttons.length - 1].setReadOnly(false);
-                    textFields[buttons.length - 1].setLabel("Verzeichnis hinzufügen");
+                    if (textFields[buttons.length - 1].getValue().length() > textFields[buttons.length-1].getMinLength()) {
+
+                        dataBaseUtils.addNewIdAndName(textFields[textFields.length - 1].getValue());
+                        dialog[button.length -1].close();
+                        UI.getCurrent().getPage().reload();
+                    }
+                    else {
+                        dialog[button.length -1].close();
+                    }
+
                     textFields[buttons.length - 1].setMinLength(1);
-
-                    buttons[buttons.length - 1].addClickListener(Click -> {
-
-                        if (textFields[buttons.length - 1].getValue().length() > textFields[buttons.length-1].getMinLength()) {
-
-                            dataBaseUtils.addNewIdAndName(textFields[textFields.length - 1].getValue());
-                            dialog[button.length -1].close();
-                            UI.getCurrent().getPage().reload();
-                        }
-                        else {
-                            dialog[button.length -1].close();
-                        }
-
-                        textFields[buttons.length - 1].setMinLength(1);
-                    });
-
-                    cancel[buttons.length - 1].addClickListener(Click -> dialog[buttons.length -1].close());
-
                 });
-            }
-            //Übersicht
-            {
-                for (int j = 0; j < buttons.length; j++) {
-                    textFields[j].setVisible(false);
-                    buttons[j].setVisible(false);
-                    button[j].setVisible(false);
 
-                }
+                cancel[buttons.length - 1].addClickListener(Click -> dialog[buttons.length -1].close());
 
-                LDAP_Overview.addClickListener(event -> {
-
-
-
-
-
-                });
-            }
-
-
-
-
-
-
-
-
-
-
-
-
-
+            });
 
             content.setAlignItems(FlexComponent.Alignment.CENTER);
             content.add(LDAP_EDIT, LDAP_ADD, LDAP_IDs, LDAP_Overview);
