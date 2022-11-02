@@ -2,6 +2,7 @@ package de.rub.springwebapplication.Data;
 
 
 import com.vaadin.flow.component.notification.Notification;
+import de.rub.springwebapplication.MitabeiterView.Eintrag;
 import org.ini4j.Wini;
 
 import java.io.File;
@@ -101,14 +102,13 @@ public class DataBaseUtils extends SQLUtils {
         }
     }
 
-    public List<String[]> getAllInfos() {
+    public List<Eintrag> getAllInfos() {
         ResultSet rs;
-        List<String[]> list = new ArrayList<>();
+        List<Eintrag> list = new ArrayList<>();
         try {
             rs = onQuery("SELECT ID,GRP_NAME FROM LDAP_GRP ORDER BY ID");
             while (rs.next()) {
-                String[] idAndName = {rs.getString("ID"), rs.getString("GRP_NAME")};
-                list.add(idAndName);
+                list.add(new Eintrag(rs.getString("ID"), rs.getString("GRP_NAME")));
             }
         }
         catch (Exception e) {
@@ -116,6 +116,7 @@ public class DataBaseUtils extends SQLUtils {
         }
         return list;
     }
+
     public void editInfoLDAP(int id, String text) {
 
 
