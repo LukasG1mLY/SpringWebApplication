@@ -8,6 +8,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
@@ -28,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @PageTitle("MitabeiterView")
@@ -123,14 +125,24 @@ public class MitabeiterView extends Div {
         else if (tab.equals(LDAP)) {
 
             MenuBar LDAP_EDIT = new MenuBar();
-            List<String[]> allIdsAndNames = dataBaseUtils.getAllInfos();
+            List<Eintrag> eintraege = dataBaseUtils.getAllInfos();
 
-            Button[] buttons = new Button[allIdsAndNames.size() + 1];
-            Button[] button = new Button[allIdsAndNames.size() + 1];
-            Button[] delete = new Button[allIdsAndNames.size() + 1];
-            Button[] cancel = new Button[allIdsAndNames.size() + 1];
-            Dialog[] dialog = new Dialog[allIdsAndNames.size() + 1];
-            TextField[] textFields = new TextField[allIdsAndNames.size() + 1];
+            Grid<Eintrag> lGrid = new Grid<>();
+            lGrid.addColumn(Eintrag::getId).setHeader("ID");
+            lGrid.addColumn(Eintrag::getContent).setHeader("Content");
+            lGrid.setMaxWidth(50, Unit.PERCENTAGE);
+            lGrid.setItems(eintraege);
+
+            content.setAlignItems(FlexComponent.Alignment.CENTER);
+            content.add(lGrid);
+
+
+            Button[] buttons = new Button[eintraege.size() + 1];
+            Button[] button = new Button[eintraege.size() + 1];
+            Button[] delete = new Button[eintraege.size() + 1];
+            Button[] cancel = new Button[eintraege.size() + 1];
+            Dialog[] dialog = new Dialog[eintraege.size() + 1];
+            TextField[] textFields = new TextField[eintraege.size() + 1];
 
             MenuItem LDAP_IDs = LDAP_EDIT.addItem("Bearbeiten");
             MenuItem LDAP_ADD = LDAP_EDIT.addItem("Hinzufügen");
@@ -161,7 +173,7 @@ public class MitabeiterView extends Div {
 
                         SubMenu subItems = LDAP_IDs.getSubMenu();
 
-                        MenuItem LDAP_ID = subItems.addItem("Verzeichnis_" + allIdsAndNames.get(l)[0]); {
+                        MenuItem LDAP_ID = subItems.addItem("Verzeichnis_" + eintraege.get(l).getId()); {
 
                             LDAP_ID.addClickListener(event -> {
                                 for (int j = 0; j < buttons.length; j++) {
@@ -183,12 +195,12 @@ public class MitabeiterView extends Div {
                                 textFields[l].setVisible(true);
                                 textFields[l].setReadOnly(false);
                                 textFields[l].setMinLength(1);
-                                textFields[l].setValue(allIdsAndNames.get(l)[1]);
-                                textFields[l].setLabel("Verzeichnis_" + allIdsAndNames.get(l)[0]);
-                                textFields[l].setPlaceholder(allIdsAndNames.get(l)[1]);
+                                textFields[l].setValue(eintraege.get(l).getContent());
+                                textFields[l].setLabel("Verzeichnis_" + eintraege.get(l).getId());
+                                textFields[l].setPlaceholder(eintraege.get(l).getContent());
 
                                 dialog[l].setWidth(40, Unit.PERCENTAGE);
-                                dialog[l].setHeaderTitle(String.format("Möchten Sie Verzeichnis_ " + allIdsAndNames.get(l)[0] + " " + "Löschen ?"));
+                                dialog[l].setHeaderTitle(String.format("Möchten Sie Verzeichnis_ " + eintraege.get(l).getId() + " " + "Löschen ?"));
                                 dialog[l].add("Sind Sie sicher, dass sie dieses Verzeichnis endgültig löschen wollen ?");
                                 dialog[l].getFooter().add(delete[l]);
                                 dialog[l].getFooter().add(cancel[l]);
@@ -201,7 +213,7 @@ public class MitabeiterView extends Div {
                                 });
 
                                 delete[l].addClickListener(Click -> {
-                                    dataBaseUtils.deleteInfoLDAP(Integer.parseInt(allIdsAndNames.get(l)[0]));
+                                    dataBaseUtils.deleteInfoLDAP(Integer.parseInt(eintraege.get(l).getId()));
                                     dialog[l].close();
                                     UI.getCurrent().getPage().reload();
                                 });
@@ -214,7 +226,7 @@ public class MitabeiterView extends Div {
 
                                     } else {
                                         dataBaseUtils.editInfoLDAP(l, textFields[l].getValue());
-                                        textFields[l].setPlaceholder(allIdsAndNames.get(l)[1]);
+                                        textFields[l].setPlaceholder(eintraege.get(l).getContent());
                                         UI.getCurrent().getPage().reload();
                                     }
                                 });
@@ -230,8 +242,8 @@ public class MitabeiterView extends Div {
 
                                 textFields[l].setVisible(true);
                                 textFields[l].setReadOnly(true);
-                                textFields[l].setValue(allIdsAndNames.get(l)[1]);
-                                textFields[l].setLabel("Verzeichnis " + allIdsAndNames.get(l)[0]);
+                                textFields[l].setValue(eintraege.get(l).getContent());
+                                textFields[l].setLabel("Verzeichnis " + eintraege.get(l).getId());
                             });
 
                         }
