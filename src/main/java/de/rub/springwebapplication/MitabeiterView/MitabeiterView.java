@@ -125,16 +125,13 @@ public class MitabeiterView extends Div {
         else if (tab.equals(LDAP)) {
 
             MenuBar LDAP_EDIT = new MenuBar();
-            List<Eintrag> eintraege = dataBaseUtils.getAllInfos();
+            List<de.rub.springwebapplication.MitabeiterView.Eintrag> eintraege = dataBaseUtils.getAllInfos();
 
-            Grid<Eintrag> lGrid = new Grid<>();
-            lGrid.addColumn(Eintrag::getId).setHeader("ID");
-            lGrid.addColumn(Eintrag::getContent).setHeader("Content");
+            Grid<de.rub.springwebapplication.MitabeiterView.Eintrag> lGrid = new Grid<>();
+            lGrid.addColumn(de.rub.springwebapplication.MitabeiterView.Eintrag::getId).setHeader("ID");
+            lGrid.addColumn(de.rub.springwebapplication.MitabeiterView.Eintrag::getContent).setHeader("Content");
             lGrid.setMaxWidth(50, Unit.PERCENTAGE);
             lGrid.setItems(eintraege);
-
-            content.setAlignItems(FlexComponent.Alignment.CENTER);
-            content.add(lGrid);
 
 
             Button[] buttons = new Button[eintraege.size() + 1];
@@ -302,7 +299,7 @@ public class MitabeiterView extends Div {
             });
 
             content.setAlignItems(FlexComponent.Alignment.CENTER);
-            content.add(LDAP_EDIT, LDAP_ADD, LDAP_IDs, LDAP_Overview);
+            content.add(LDAP_EDIT, LDAP_ADD, LDAP_IDs, LDAP_Overview, lGrid);
             for (int i = 0; i < buttons.length; i++) {
                 content.add(textFields[i], buttons[i], button[i], delete[i], cancel[i], dialog[i]);
 
