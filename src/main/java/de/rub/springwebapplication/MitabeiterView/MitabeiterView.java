@@ -11,8 +11,6 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -204,8 +202,8 @@ public class MitabeiterView extends Div {
 
                                 delete[l].addClickListener(Click -> {
                                     dataBaseUtils.deleteInfoLDAP(Integer.parseInt(allIdsAndNames.get(l)[0]));
-
                                     dialog[l].close();
+                                    UI.getCurrent().getPage().reload();
                                 });
 
                                 cancel[l].addClickListener(Click -> dialog[l].close());
@@ -213,7 +211,6 @@ public class MitabeiterView extends Div {
                                 buttons[l].addClickListener(Click -> {
                                     if (textFields[l].getValue().length() < textFields[l].getMinLength()){
                                         textFields[l].setInvalid(true);
-
                                     } else {
                                         dataBaseUtils.editInfoLDAP(l, textFields[l].getValue());
                                         textFields[l].setInvalid(false);
@@ -272,26 +269,14 @@ public class MitabeiterView extends Div {
 
                     buttons[buttons.length - 1].addClickListener(Click -> {
 
-                        if (textFields[buttons.length - 1].getValue().length() < textFields[buttons.length-1].getMinLength()) {
-                            textFields[buttons.length - 1].setInvalid(true);
-                            textFields[buttons.length - 1].setErrorMessage("Dieses Feld darf NICHT Leer sein !");
-                            Notification Error = Notification.show("Bitte vergewissern sie sich, dass sie eine Valide eingabe gemacht haben.");
-                            Error.addThemeVariants(NotificationVariant.LUMO_ERROR);
-                            Error.setPosition(Notification.Position.TOP_CENTER);
-                            textFields[buttons.length - 1].setMinLength(1);
-                        }
-                        else {
-
+                        if (textFields[buttons.length - 1].getValue().length() > textFields[buttons.length-1].getMinLength()) {
 
                             dataBaseUtils.addNewIdAndName(textFields[textFields.length - 1].getValue());
-                            textFields[buttons.length - 1].clear();
-                            textFields[buttons.length - 1].setMinLength(1);
-                            textFields[buttons.length - 1].setInvalid(false);
                             dialog[button.length -1].close();
-                            Notification submit = Notification.show("Verzeichnis erstellt");
-                            submit.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                            submit.setPosition(Notification.Position.TOP_CENTER);
-
+                            UI.getCurrent().getPage().reload();
+                        }
+                        else {
+                            dialog[button.length -1].close();
                         }
 
                         textFields[buttons.length - 1].setMinLength(1);
@@ -304,11 +289,11 @@ public class MitabeiterView extends Div {
             //Übersicht
             {
                 for (int j = 0; j < buttons.length; j++) {
-                textFields[j].setVisible(false);
-                buttons[j].setVisible(false);
-                button[j].setVisible(false);
+                    textFields[j].setVisible(false);
+                    buttons[j].setVisible(false);
+                    button[j].setVisible(false);
 
-            }
+                }
 
                 LDAP_Overview.addClickListener(event -> {
 
@@ -318,6 +303,20 @@ public class MitabeiterView extends Div {
 
                 });
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             content.setAlignItems(FlexComponent.Alignment.CENTER);
             content.add(LDAP_EDIT, LDAP_ADD, LDAP_IDs, LDAP_Overview);
             for (int i = 0; i < buttons.length; i++) {
