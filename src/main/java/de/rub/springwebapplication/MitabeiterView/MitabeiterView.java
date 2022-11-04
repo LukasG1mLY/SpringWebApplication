@@ -57,11 +57,12 @@ public class MitabeiterView extends Div {
 
 
         Tabs tabs = new Tabs(Startseite_WebClient, Bearbeiten, LDAP, Link, Logout);
-        tabs.addSelectedChangeListener(event ->  setContent(event.getSelectedTab()));
+        tabs.addSelectedChangeListener(event -> setContent(event.getSelectedTab()));
         setContent(tabs.getSelectedTab());
 
         add(tabs, content);
     }
+
     private void setContent(@NotNull Tab tab) {
         content.removeAll();
 
@@ -75,9 +76,7 @@ public class MitabeiterView extends Div {
             content.add(Titel, Info_Text_Studenten);
 
 
-        }
-
-        else if (tab.equals(Bearbeiten)) {
+        } else if (tab.equals(Bearbeiten)) {
 
 
             //Studenten Infobox
@@ -114,14 +113,10 @@ public class MitabeiterView extends Div {
             content.add(Change_Info_Text_Mitabeiter, Confirm_Changed_Text_Value_For_Mitabeiter);
             content.add(Change_Info_Text_Studenten, Confirm_Changed_Text_Value_For_Studenten);
 
-        }
-
-        else if (tab.equals(Logout)) {
+        } else if (tab.equals(Logout)) {
             UI.getCurrent().navigate(Redirect.class);
 
-        }
-
-        else if (tab.equals(LDAP)) {
+        } else if (tab.equals(LDAP)) {
 
             MenuBar LDAP_EDIT = new MenuBar();
             List<LDAP> ldap = dataBaseUtils.getAllInfos();
@@ -147,109 +142,110 @@ public class MitabeiterView extends Div {
             MenuItem LDAP_ADD = LDAP_EDIT.addItem("Hinzufügen");
             MenuItem LDAP_Overview = LDAP_EDIT.addItem("Übersicht");
 
-                for (int i = 0; i < buttons.length; i++) {
+            for (int i = 0; i < buttons.length; i++) {
 
-                    final int l = i;
-                    buttons[l] = new Button("Bestätigen");
-                    buttons[l].setVisible(false);
+                final int l = i;
+                buttons[l] = new Button("Bestätigen");
+                buttons[l].setVisible(false);
 
-                    button[l] = new Button("Löschen");
-                    button[l].setVisible(false);
+                button[l] = new Button("Löschen");
+                button[l].setVisible(false);
 
-                    delete[l] = new Button("Löschen");
-                    delete[l].setVisible(false);
+                delete[l] = new Button("Löschen");
+                delete[l].setVisible(false);
 
-                    cancel[l] = new Button("Abbrechen");
-                    cancel[l].setVisible(false);
+                cancel[l] = new Button("Abbrechen");
+                cancel[l].setVisible(false);
 
-                    textFields[l] = new TextField();
-                    textFields[l].setVisible(false);
-                    textFields[l].setWidth(40, Unit.PERCENTAGE);
+                textFields[l] = new TextField();
+                textFields[l].setVisible(false);
+                textFields[l].setWidth(40, Unit.PERCENTAGE);
 
-                    dialog[l]  = new Dialog();
+                dialog[l] = new Dialog();
 
-                    if (i != buttons.length - 1) {
+                if (i != buttons.length - 1) {
 
-                        SubMenu subItems = LDAP_IDs.getSubMenu();
+                    SubMenu subItems = LDAP_IDs.getSubMenu();
 
-                        MenuItem LDAP_ID = subItems.addItem("Verzeichnis_" + ldap.get(l).getId()); {
+                    MenuItem LDAP_ID = subItems.addItem("Verzeichnis_" + ldap.get(l).getId());
+                    {
 
-                            LDAP_ID.addClickListener(event -> {
-                                for (int j = 0; j < buttons.length; j++) {
-                                    textFields[j].setVisible(false);
-                                    buttons[j].setVisible(false);
-                                    button[j].setVisible(false);
-                                    lGrid.setVisible(false);
+                        LDAP_ID.addClickListener(event -> {
+                            for (int j = 0; j < buttons.length; j++) {
+                                textFields[j].setVisible(false);
+                                buttons[j].setVisible(false);
+                                button[j].setVisible(false);
+                                lGrid.setVisible(false);
 
-                                }
+                            }
 
-                                buttons[l].addClickShortcut(Key.ENTER);
-                                buttons[l].setVisible(true);
-                                button[l].setVisible(true);
+                            buttons[l].addClickShortcut(Key.ENTER);
+                            buttons[l].setVisible(true);
+                            button[l].setVisible(true);
 
-                                delete[l].addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
-                                delete[l].getStyle().set("margin-right", "auto");
+                            delete[l].addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+                            delete[l].getStyle().set("margin-right", "auto");
 
-                                cancel[l].addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+                            cancel[l].addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
-                                textFields[l].setVisible(true);
-                                textFields[l].setReadOnly(false);
-                                textFields[l].setMinLength(1);
-                                textFields[l].setValue(ldap.get(l).getContent());
-                                textFields[l].setLabel("Verzeichnis_" + ldap.get(l).getId());
-                                textFields[l].setPlaceholder(ldap.get(l).getContent());
+                            textFields[l].setVisible(true);
+                            textFields[l].setReadOnly(false);
+                            textFields[l].setMinLength(1);
+                            textFields[l].setValue(ldap.get(l).getContent());
+                            textFields[l].setLabel("Verzeichnis_" + ldap.get(l).getId());
+                            textFields[l].setPlaceholder(ldap.get(l).getContent());
 
-                                dialog[l].setWidth(40, Unit.PERCENTAGE);
-                                dialog[l].setHeaderTitle(String.format("Möchten Sie Verzeichnis_ " + ldap.get(l).getId() + " " + "Löschen ?"));
-                                dialog[l].add("Sind Sie sicher, dass sie dieses Verzeichnis endgültig löschen wollen ?");
-                                dialog[l].getFooter().add(delete[l]);
-                                dialog[l].getFooter().add(cancel[l]);
+                            dialog[l].setWidth(40, Unit.PERCENTAGE);
+                            dialog[l].setHeaderTitle(String.format("Möchten Sie Verzeichnis_ " + ldap.get(l).getId() + " " + "Löschen ?"));
+                            dialog[l].add("Sind Sie sicher, dass sie dieses Verzeichnis endgültig löschen wollen ?");
+                            dialog[l].getFooter().add(delete[l]);
+                            dialog[l].getFooter().add(cancel[l]);
 
-                                button[l].addClickListener(Click -> {
-                                    delete[l].setVisible(true);
-                                    cancel[l].setVisible(true);
-                                    dialog[l].open();
+                            button[l].addClickListener(Click -> {
+                                delete[l].setVisible(true);
+                                cancel[l].setVisible(true);
+                                dialog[l].open();
 
-                                });
+                            });
 
-                                delete[l].addClickListener(Click -> {
-                                    dataBaseUtils.deleteInfoLDAP(Integer.parseInt(ldap.get(l).getId()));
+                            delete[l].addClickListener(Click -> {
+                                dataBaseUtils.deleteInfoLDAP(Integer.parseInt(ldap.get(l).getId()));
+                                dialog[l].close();
+                                UI.getCurrent().getPage().reload();
+                            });
+
+                            cancel[l].addClickListener(Click -> dialog[l].close());
+
+                            buttons[l].addClickListener(Click -> {
+                                if (textFields[l].getValue().length() < textFields[l].getMinLength()) {
                                     dialog[l].close();
+
+                                } else {
+                                    dataBaseUtils.editInfoLDAP(l, textFields[l].getValue());
+                                    textFields[l].setPlaceholder(ldap.get(l).getContent());
                                     UI.getCurrent().getPage().reload();
-                                });
-
-                                cancel[l].addClickListener(Click -> dialog[l].close());
-
-                                buttons[l].addClickListener(Click -> {
-                                    if (textFields[l].getValue().length() < textFields[l].getMinLength()) {
-                                        dialog[l].close();
-
-                                    } else {
-                                        dataBaseUtils.editInfoLDAP(l, textFields[l].getValue());
-                                        textFields[l].setPlaceholder(ldap.get(l).getContent());
-                                        UI.getCurrent().getPage().reload();
-                                    }
-                                });
-                            });
-
-                            LDAP_Overview.addClickListener(event -> {
-                                for (int j = 0; j < buttons.length; j++) {
-                                    buttons[j].setVisible(false);
-                                    button[j].setVisible(false);
-                                    textFields[j].setVisible(false);
-
-
                                 }
-
-                                lGrid.setVisible(true);
-
                             });
+                        });
 
-                        }
+                        LDAP_Overview.addClickListener(event -> {
+                            for (int j = 0; j < buttons.length; j++) {
+                                buttons[j].setVisible(false);
+                                button[j].setVisible(false);
+                                textFields[j].setVisible(false);
+
+
+                            }
+
+                            lGrid.setVisible(true);
+
+                        });
+
                     }
                 }
+            }
 
-                LDAP_ADD.addClickListener(event -> {
+            LDAP_ADD.addClickListener(event -> {
                 dialog[buttons.length - 1].setVisible(true);
                 buttons[buttons.length - 1].setVisible(false);
                 textFields[buttons.length - 1].setVisible(false);
@@ -259,7 +255,7 @@ public class MitabeiterView extends Div {
 
                 dialog[buttons.length - 1].open();
                 dialog[buttons.length - 1].setWidth(40, Unit.PERCENTAGE);
-                dialog[buttons.length -1].setHeaderTitle("Verzeichnis hinzufügen");
+                dialog[buttons.length - 1].setHeaderTitle("Verzeichnis hinzufügen");
                 dialog[buttons.length - 1].getFooter().add(buttons[buttons.length - 1]);
                 dialog[buttons.length - 1].getFooter().add(cancel[buttons.length - 1]);
                 dialog[buttons.length - 1].add(textFields[buttons.length - 1]);
@@ -282,20 +278,19 @@ public class MitabeiterView extends Div {
                 textFields[buttons.length - 1].setMaxLength(400);
                 buttons[buttons.length - 1].addClickListener(Click -> {
 
-                    if (textFields[buttons.length - 1].getValue().length() > textFields[buttons.length-1].getMinLength()) {
+                    if (textFields[buttons.length - 1].getValue().length() > textFields[buttons.length - 1].getMinLength()) {
 
-                        dataBaseUtils.  addNewIdAndName(textFields[textFields.length - 1].getValue());
-                        dialog[button.length -1].close();
+                        dataBaseUtils.addNewIdAndName(textFields[textFields.length - 1].getValue());
+                        dialog[button.length - 1].close();
                         UI.getCurrent().getPage().reload();
-                    }
-                    else {
-                        dialog[button.length -1].close();
+                    } else {
+                        dialog[button.length - 1].close();
                     }
 
                     textFields[buttons.length - 1].setMinLength(1);
                 });
 
-                cancel[buttons.length - 1].addClickListener(Click -> dialog[buttons.length -1].close());
+                cancel[buttons.length - 1].addClickListener(Click -> dialog[buttons.length - 1].close());
 
             });
 
@@ -304,9 +299,7 @@ public class MitabeiterView extends Div {
             for (int i = 0; i < buttons.length; i++) {
                 content.add(textFields[i], buttons[i], button[i], delete[i], cancel[i], dialog[i]);
             }
-        }
-
-        else if (tab.equals(Link)) {
+        } else if (tab.equals(Link)) {
 
 
             List<Link> Link = dataBaseUtils.getAllInfos_Link();
@@ -340,11 +333,16 @@ public class MitabeiterView extends Div {
             Button[] delete = new Button[Link.size() + 1];
             Button[] cancel = new Button[Link.size() + 1];
             Dialog[] dialog = new Dialog[Link.size() + 1];
+
             TextField[] Linktext = new TextField[Link.size() + 1];
+            TextField[] Link_group_ID = new TextField[Link.size() + 1];
+            TextField[] Sort = new TextField[Link.size() + 1];
             TextField[] Description = new TextField[Link.size() + 1];
             TextField[] URL_ACTIVE = new TextField[Link.size() + 1];
             TextField[] URL_INACTIVE = new TextField[Link.size() + 1];
-
+            TextField[] Active = new TextField[Link.size() + 1];
+            TextField[] Auth_Level = new TextField[Link.size() + 1];
+            TextField[] NewTab = new TextField[Link.size() + 1];
 
 
             for (int i = 0; i < buttons.length; i++) {
@@ -353,70 +351,102 @@ public class MitabeiterView extends Div {
                 buttons[l] = new Button("Bestätigen");
                 buttons[l].setVisible(false);
 
-                button[l] = new Button("Erweiterte Einstellungen");
+                button[l] = new Button("Hinzufügen");
+                button[l].getStyle().set("margin-right", "auto");
                 button[l].setVisible(false);
 
                 delete[l] = new Button("Löschen");
                 delete[l].addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+                delete[l].getStyle().set("margin-right", "auto");
                 delete[l].setVisible(false);
 
-                cancel[l] = new Button("Abbrechen");
+                cancel[l] = new Button("Abbrechen", Click -> dialog[l].close());
                 cancel[l].addThemeVariants(ButtonVariant.LUMO_TERTIARY);
                 cancel[l].setVisible(false);
 
+
                 Linktext[l] = new TextField("Linktext");
                 Linktext[l].setVisible(false);
-                Linktext[l].setWidth(100, Unit.PERCENTAGE);
+
+                Link_group_ID[l] = new TextField("Link_group_ID");
+                Link_group_ID[l].setVisible(false);
+
+                Sort[l] = new TextField("Sort");
+                Sort[l].setVisible(false);
 
                 Description[l] = new TextField("Description");
                 Description[l].setVisible(false);
-                Description[l].setWidth(100, Unit.PERCENTAGE);
 
                 URL_ACTIVE[l] = new TextField("URL_ACTIVE");
                 URL_ACTIVE[l].setVisible(false);
-                URL_ACTIVE[l].setWidth(100, Unit.PERCENTAGE);
 
                 URL_INACTIVE[l] = new TextField("URL_INACTIVE");
                 URL_INACTIVE[l].setVisible(false);
-                URL_INACTIVE[l].setWidth(100, Unit.PERCENTAGE);
 
+                Active[l] = new TextField("Active");
+                Active[l].setVisible(false);
 
-                dialog[l]  = new Dialog();
+                Auth_Level[l] = new TextField("Auth Level");
+                Auth_Level[l].setVisible(false);
 
+                NewTab[l] = new TextField("NewTab");
+                NewTab[l].setVisible(false);
+
+                dialog[l] = new Dialog();
 
 
                 if (i != buttons.length - 1) {
 
                     SubMenu subItems = Link_IDs.getSubMenu();
 
-                    MenuItem Link_ID = subItems.addItem("Verzeichnis_" + Link.get(l).getId()); {
+                    MenuItem Link_ID = subItems.addItem("Verzeichnis_" + Link.get(l).getId());
+                    {
 
 
                         Link_ID.addClickListener(event -> {
 
+                            dialog[l].open();
+                            dialog[l].setHeaderTitle("Verzeichnis " + Link.get(l).Id + " Bearbeiten");
                             Linktext[l].setValue(Link.get(l).Linktext);
+                            Link_group_ID[l].setValue(Link.get(l).Link_grp_id);
+                            Sort[l].setValue(Link.get(l).Sort);
                             Description[l].setValue(Link.get(l).Description);
                             URL_ACTIVE[l].setValue(Link.get(l).Url_active);
                             URL_INACTIVE[l].setValue(Link.get(l).Url_inactive);
+                            Active[l].setValue(Link.get(l).Active);
+                            Auth_Level[l].setValue(Link.get(l).Auth_level);
+                            NewTab[l].setValue(Link.get(l).Newtab);
 
-                            VerticalLayout dialogLayout = new VerticalLayout(Linktext[l], Description[l], URL_ACTIVE[l], URL_INACTIVE[l]);
+                            VerticalLayout dialogLayout = new VerticalLayout(Linktext[l], Link_group_ID[l], Sort[l], Description[l], URL_ACTIVE[l], URL_INACTIVE[l], Active[l], Auth_Level[l], NewTab[l]);
                             dialogLayout.setPadding(false);
                             dialogLayout.setSpacing(false);
                             dialogLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
                             dialogLayout.getStyle().set("width", "18rem").set("max-width", "100%");
 
-                            dialog[l].open();
+                            buttons[l].setVisible(true);
                             cancel[l].setVisible(true);
                             delete[l].setVisible(true);
                             Linktext[l].setVisible(true);
+                            Link_group_ID[l].setVisible(true);
+                            Sort[l].setVisible(true);
                             Description[l].setVisible(true);
                             URL_ACTIVE[l].setVisible(true);
                             URL_INACTIVE[l].setVisible(true);
-                            dialog[l].add(dialogLayout);
-                            dialog[l].setHeaderTitle("Verzeichnis_" + Link.get(l).getId());
-                            dialog[l].getFooter().add(delete[l], cancel[l]);
-                        });
+                            Active[l].setVisible(true);
+                            Auth_Level[l].setVisible(true);
+                            NewTab[l].setVisible(true);
 
+                            dialog[l].add(dialogLayout);
+                            dialog[l].getFooter().add(delete[l]);
+                            dialog[l].getFooter().add(buttons[l], cancel[l]);
+
+                            delete[l].addClickListener(Click -> {
+                                dataBaseUtils.deleteInfoLink(Integer.parseInt(Link.get(l).Id));
+                                UI.getCurrent().getPage().reload();
+                            });
+
+
+                        });
 
                         Link_Overview.addClickListener(event -> {
                             for (int j = 0; j < buttons.length; j++) {
@@ -433,14 +463,102 @@ public class MitabeiterView extends Div {
 
                     }
                 }
+
             }
 
 
-            content.setAlignItems(FlexComponent.Alignment.CENTER);
-            content.add(Link_EDIT, Link_IDs, Link_ADD, Link_Overview, Link_grid);
-            for (int i = 0; i < buttons.length; i++) {
-                content.add(Linktext[i], buttons[i], button[i], delete[i], cancel[i], dialog[i]);
-            }
+
+                Dialog dialog_ADD = new Dialog();
+
+
+                Button button_ADD = new Button("Speichern");
+                button_ADD.setVisible(false);
+                button_ADD.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+                Button button_ADD_1 = new Button("Abbrechen");
+                button_ADD_1.setVisible(false);
+                button_ADD_1.getStyle().set("margin-right", "auto");
+                button_ADD_1.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+
+                TextField Linktext_ADD = new TextField();
+                TextField Link_group_ID_ADD = new TextField();
+                TextField Sort_ADD = new TextField();
+                TextField Description_ADD = new TextField();
+                TextField URL_ACTIVE_ADD = new TextField();
+                TextField URL_INACTIVE_ADD = new TextField();
+                TextField Active_ADD = new TextField();
+                TextField Auth_Level_ADD = new TextField();
+                TextField NewTab_ADD = new TextField();
+
+                Linktext_ADD.setVisible(false);
+                Link_group_ID_ADD.setVisible(false);
+                Sort_ADD.setVisible(false);
+                Description_ADD.setVisible(false);
+                URL_ACTIVE_ADD.setVisible(false);
+                URL_INACTIVE_ADD.setVisible(false);
+                Active_ADD.setVisible(false);
+                Auth_Level_ADD.setVisible(false);
+                NewTab_ADD.setVisible(false);
+
+                Linktext_ADD.setLabel("Linktext");
+                Link_group_ID_ADD.setLabel("Link Group ID");
+                Sort_ADD.setLabel("Sort");
+                Description_ADD.setLabel("Description");
+                URL_ACTIVE_ADD.setLabel("URL Active");
+                URL_INACTIVE_ADD.setLabel("In Active");
+                Active_ADD.setLabel("Active");
+                Auth_Level_ADD.setLabel("Auth Level");
+                NewTab_ADD.setLabel("NewTab");
+
+
+
+
+
+                VerticalLayout dialogLayout = new VerticalLayout(Linktext_ADD, Link_group_ID_ADD, Sort_ADD, Description_ADD, URL_ACTIVE_ADD, URL_INACTIVE_ADD, Active_ADD, Auth_Level_ADD, NewTab_ADD);
+
+                Link_ADD.addClickListener(Click -> {
+                    button_ADD_1.setVisible(true);
+                    button_ADD.setVisible(true);
+                    Linktext_ADD.setVisible(true);
+                    Link_group_ID_ADD.setVisible(true);
+                    Sort_ADD.setVisible(true);
+                    Description_ADD.setVisible(true);
+                    URL_ACTIVE_ADD.setVisible(true);
+                    URL_INACTIVE_ADD.setVisible(true);
+                    Active_ADD.setVisible(true);
+                    Auth_Level_ADD.setVisible(true);
+                    NewTab_ADD.setVisible(true);
+
+                    dialog_ADD.open();
+                    dialog_ADD.setHeaderTitle("Verzeichnis Hinzufügen");
+                    dialog_ADD.getFooter().add(button_ADD_1);
+                    dialog_ADD.getFooter().add(button_ADD);
+                    dialog_ADD.add(dialogLayout);
+
+                    button_ADD.addClickListener(e -> {
+
+                        dataBaseUtils.addNewIdAndName_Link(
+                                Linktext_ADD.getValue(),
+                                Link_group_ID_ADD.getValue(),
+                                Sort_ADD.getValue(),
+                                Description_ADD.getValue(),
+                                URL_ACTIVE_ADD.getValue(),
+                                URL_INACTIVE_ADD.getValue(),
+                                Active_ADD.getValue(),
+                                Auth_Level_ADD.getValue(),
+                                NewTab_ADD.getValue());
+
+                        UI.getCurrent().getPage().reload();
+
+                    });
+
+                });
+
+                content.setAlignItems(FlexComponent.Alignment.CENTER);
+                content.add(Link_EDIT, Link_IDs, Link_ADD, Link_Overview, Link_grid, dialog_ADD, button_ADD_1, button_ADD);
+                for (int i = 0; i < buttons.length; i++) {
+                    content.add(Linktext[i], buttons[i], button[i], delete[i], cancel[i], dialog[i]);
+
+                }
         }
 
     }
