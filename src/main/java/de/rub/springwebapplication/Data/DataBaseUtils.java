@@ -95,7 +95,6 @@ public class DataBaseUtils extends SQLUtils {
             e.printStackTrace();
         }
     }
-
     public void editInfoLDAP(int id, String text) {
 
 
@@ -109,15 +108,13 @@ public class DataBaseUtils extends SQLUtils {
 
     }
 
-    public void editInfoLink(int id, String Linktext, String Description, String Url_Active, String Url_inActive) {
+    public void editInfoLink(String Linktext, String Link_group_ID, String Sort, String Description, String Url_Active, String Url_inActive, String Active, String Auth_Level, String NewTab) {
 
 
         try {
-            onExecute("UPDATE LINK SET LINKTEXT,DESCRIPTION,URL_ACTIVE,URL_INACTIVE =? WHERE ID =?",Linktext, Description, Url_Active, Url_inActive, id + 1);
-            System.out.println("Changed Info LDAP_ID_" + (id + 1));
+            onExecute("UPDATE LINK SET LINKTEXT,DESCRIPTION,URL_ACTIVE,URL_INACTIVE =? WHERE ID =?",Linktext, Link_group_ID, Sort, Description, Url_Active, Url_inActive, Active, Auth_Level, NewTab);
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Failed onExecute by LDAP_ID_" + id);
         }
 
     }
@@ -146,8 +143,6 @@ public class DataBaseUtils extends SQLUtils {
 
 
     }
-
-
     public List<LDAP> getAllInfos() {
         ResultSet rs;
         List<LDAP> list = new ArrayList<>();

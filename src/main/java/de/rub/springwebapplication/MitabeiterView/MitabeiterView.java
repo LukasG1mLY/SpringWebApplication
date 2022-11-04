@@ -284,7 +284,7 @@ public class MitabeiterView extends Div {
 
                     if (textFields[buttons.length - 1].getValue().length() > textFields[buttons.length-1].getMinLength()) {
 
-                        dataBaseUtils.  addNewIdAndName(textFields[textFields.length - 1].getValue());
+                        dataBaseUtils.addNewIdAndName(textFields[textFields.length - 1].getValue());
                         dialog[button.length -1].close();
                         UI.getCurrent().getPage().reload();
                     }
@@ -340,10 +340,16 @@ public class MitabeiterView extends Div {
             Button[] delete = new Button[Link.size() + 1];
             Button[] cancel = new Button[Link.size() + 1];
             Dialog[] dialog = new Dialog[Link.size() + 1];
+
             TextField[] Linktext = new TextField[Link.size() + 1];
+            TextField[] Link_group_ID = new TextField[Link.size() + 1];
+            TextField[] Sort = new TextField[Link.size() + 1];
             TextField[] Description = new TextField[Link.size() + 1];
             TextField[] URL_ACTIVE = new TextField[Link.size() + 1];
             TextField[] URL_INACTIVE = new TextField[Link.size() + 1];
+            TextField[] Active = new TextField[Link.size() + 1];
+            TextField[] Auth_Level = new TextField[Link.size() + 1];
+            TextField[] NewTab = new TextField[Link.size() + 1];
 
 
 
@@ -353,36 +359,49 @@ public class MitabeiterView extends Div {
                 buttons[l] = new Button("Bestätigen");
                 buttons[l].setVisible(false);
 
-                button[l] = new Button("Erweiterte Einstellungen");
+                button[l] = new Button("Hinzufügen");
+                button[l].getStyle().set("margin-right", "auto");
                 button[l].setVisible(false);
 
                 delete[l] = new Button("Löschen");
                 delete[l].addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+                delete[l].getStyle().set("margin-right", "auto");
                 delete[l].setVisible(false);
 
-                cancel[l] = new Button("Abbrechen");
+                cancel[l] = new Button("Abbrechen", Click -> dialog[l].close());
                 cancel[l].addThemeVariants(ButtonVariant.LUMO_TERTIARY);
                 cancel[l].setVisible(false);
 
+
+
                 Linktext[l] = new TextField("Linktext");
                 Linktext[l].setVisible(false);
-                Linktext[l].setWidth(100, Unit.PERCENTAGE);
+
+                Link_group_ID[l] = new TextField("Link_group_ID");
+                Link_group_ID[l].setVisible(false);
+
+                Sort[l] = new TextField("Sort");
+                Sort[l].setVisible(false);
 
                 Description[l] = new TextField("Description");
                 Description[l].setVisible(false);
-                Description[l].setWidth(100, Unit.PERCENTAGE);
 
                 URL_ACTIVE[l] = new TextField("URL_ACTIVE");
                 URL_ACTIVE[l].setVisible(false);
-                URL_ACTIVE[l].setWidth(100, Unit.PERCENTAGE);
 
                 URL_INACTIVE[l] = new TextField("URL_INACTIVE");
                 URL_INACTIVE[l].setVisible(false);
-                URL_INACTIVE[l].setWidth(100, Unit.PERCENTAGE);
 
+                Active[l] = new TextField("Active");
+                Active[l].setVisible(false);
+
+                Auth_Level[l] = new TextField("Auth Level");
+                Auth_Level[l].setVisible(false);
+
+                NewTab[l] = new TextField("NewTab");
+                NewTab[l].setVisible(false);
 
                 dialog[l]  = new Dialog();
-
 
 
                 if (i != buttons.length - 1) {
@@ -394,29 +413,49 @@ public class MitabeiterView extends Div {
 
                         Link_ID.addClickListener(event -> {
 
+                            dialog[l].open();
+                            dialog[l].setHeaderTitle("Verzeichnis " + Link.get(l).Id + " Bearbeiten");
                             Linktext[l].setValue(Link.get(l).Linktext);
+                            Link_group_ID[l].setValue(Link.get(l).Link_grp_id);
+                            Sort[l].setValue(Link.get(l).Sort);
                             Description[l].setValue(Link.get(l).Description);
                             URL_ACTIVE[l].setValue(Link.get(l).Url_active);
                             URL_INACTIVE[l].setValue(Link.get(l).Url_inactive);
+                            Active[l].setValue(Link.get(l).Active);
+                            Auth_Level[l].setValue(Link.get(l).Auth_level);
+                            NewTab[l].setValue(Link.get(l).Newtab);
 
-                            VerticalLayout dialogLayout = new VerticalLayout(Linktext[l], Description[l], URL_ACTIVE[l], URL_INACTIVE[l]);
+                            VerticalLayout dialogLayout = new VerticalLayout(Linktext[l], Link_group_ID[l], Sort[l], Description[l], URL_ACTIVE[l], URL_INACTIVE[l], Active[l], Auth_Level[l], NewTab[l]);
                             dialogLayout.setPadding(false);
                             dialogLayout.setSpacing(false);
                             dialogLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
                             dialogLayout.getStyle().set("width", "18rem").set("max-width", "100%");
 
-                            dialog[l].open();
+                            buttons[l].setVisible(true);
                             cancel[l].setVisible(true);
                             delete[l].setVisible(true);
                             Linktext[l].setVisible(true);
+                            Link_group_ID[l].setVisible(true);
+                            Sort[l].setVisible(true);
                             Description[l].setVisible(true);
                             URL_ACTIVE[l].setVisible(true);
                             URL_INACTIVE[l].setVisible(true);
-                            dialog[l].add(dialogLayout);
-                            dialog[l].setHeaderTitle("Verzeichnis_" + Link.get(l).getId());
-                            dialog[l].getFooter().add(delete[l], cancel[l]);
-                        });
+                            Active[l].setVisible(true);
+                            Auth_Level[l].setVisible(true);
+                            NewTab[l].setVisible(true);
 
+                            dialog[l].add(dialogLayout);
+                            dialog[l].getFooter().add(delete[l]);
+                            dialog[l].getFooter().add(buttons[l], cancel[l]);
+
+                            delete[l].addClickListener(Click -> {
+                                dataBaseUtils.deleteInfoLink(Integer.parseInt(Link.get(l).Id));
+                                UI.getCurrent().getPage().reload();
+                            });
+
+
+
+                        });
 
                         Link_Overview.addClickListener(event -> {
                             for (int j = 0; j < buttons.length; j++) {
@@ -433,6 +472,74 @@ public class MitabeiterView extends Div {
 
                     }
                 }
+
+            }
+
+            for (int j = 0; j < buttons.length; j++) {
+                final int l = j;
+                buttons[l] = new Button("Bestätigen");
+                buttons[l].setVisible(false);
+
+                button[l] = new Button("Hinzufügen");
+                button[l].getStyle().set("margin-right", "auto");
+                button[l].setVisible(false);
+
+                delete[l] = new Button("Löschen");
+                delete[l].addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+                delete[l].getStyle().set("margin-right", "auto");
+                delete[l].setVisible(false);
+
+                cancel[l] = new Button("Abbrechen", Click -> dialog[l].close());
+                cancel[l].addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+                cancel[l].setVisible(false);
+
+
+
+                Linktext[l] = new TextField("Linktext");
+                Linktext[l].setVisible(false);
+
+                Link_group_ID[l] = new TextField("Link_group_ID");
+                Link_group_ID[l].setVisible(false);
+
+                Sort[l] = new TextField("Sort");
+                Sort[l].setVisible(false);
+
+                Description[l] = new TextField("Description");
+                Description[l].setVisible(false);
+
+                URL_ACTIVE[l] = new TextField("URL_ACTIVE");
+                URL_ACTIVE[l].setVisible(false);
+
+                URL_INACTIVE[l] = new TextField("URL_INACTIVE");
+                URL_INACTIVE[l].setVisible(false);
+
+                Active[l] = new TextField("Active");
+                Active[l].setVisible(false);
+
+                Auth_Level[l] = new TextField("Auth Level");
+                Auth_Level[l].setVisible(false);
+
+                NewTab[l] = new TextField("NewTab");
+                NewTab[l].setVisible(false);
+
+                dialog[l]  = new Dialog();
+
+
+
+                Link_ADD.addClickListener(Click -> {
+
+                    dialog[l].open();
+                    dialog[l].setHeaderTitle("Verzeichnis Hinzufügen");
+                    dialog[l].add();
+
+
+                    button[l].addClickListener(e -> {
+                        dataBaseUtils.editInfoLink(Linktext[l].getValue(), Link_group_ID[l].getValue(), Sort[l].getValue(), Description[l].getValue(), URL_ACTIVE[l].getValue(), URL_INACTIVE[l].getValue(), Active[l].getValue(), Auth_Level[l].getValue(), NewTab[l].getValue());
+                    });
+
+
+
+                });
             }
 
 
