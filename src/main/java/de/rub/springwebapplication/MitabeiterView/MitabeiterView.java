@@ -512,7 +512,6 @@ public class MitabeiterView extends Div {
 
 
 
-
                 VerticalLayout dialogLayout = new VerticalLayout(Linktext_ADD, Link_group_ID_ADD, Sort_ADD, Description_ADD, URL_ACTIVE_ADD, URL_INACTIVE_ADD, Active_ADD, Auth_Level_ADD, NewTab_ADD);
 
                 Link_ADD.addClickListener(Click -> {

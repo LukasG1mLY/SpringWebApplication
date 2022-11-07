@@ -44,7 +44,6 @@ public class DataBaseUtils extends SQLUtils {
             System.out.println("Failed onQuery");
             return "";
         }
-
     }
     public String getInfoStudent() {
 
