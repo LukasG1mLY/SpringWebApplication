@@ -1,6 +1,7 @@
 package de.rub.springwebapplication.Data;
 
 
+import de.rub.springwebapplication.MitabeiterView.LDAP_ROLE;
 import de.rub.springwebapplication.MitabeiterView.Link;
 import de.rub.springwebapplication.MitabeiterView.LDAP;
 import org.ini4j.Wini;
@@ -30,6 +31,7 @@ public class DataBaseUtils extends SQLUtils {
             throw new RuntimeException(e);
         }
     }
+
     public String getInfoStaff() {
 
         ResultSet rs;
@@ -60,6 +62,7 @@ public class DataBaseUtils extends SQLUtils {
             return "";
         }
     }
+
     public void editInfoStaff(String text) {
         try {
             onExecute("UPDATE INFOBOX SET INFO = ? WHERE ROLLE = 'staff'", text);
@@ -95,7 +98,6 @@ public class DataBaseUtils extends SQLUtils {
             e.printStackTrace();
         }
     }
-
     public void addNewIdAndName_Link(String Linktext, String Link_group_ID, String Sort, String Description, String Url_Active, String Url_inActive, String Active, String Auth_Level, String NewTab) {
         try
         {
@@ -103,6 +105,22 @@ public class DataBaseUtils extends SQLUtils {
             rs.next();
             int newId = rs.getInt("MAX(ID)") + 1;
             onExecute("INSERT INTO LINK VALUES(?,?,?,?,?,?,?,?,?,?)", newId, Linktext, Link_group_ID, Sort, Description, Url_Active, Url_inActive, Active, Auth_Level, NewTab);
+            System.out.println("Die ID: " + newId + " wurde zum verzeichnis Hinzugefügt.");
+
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addNewIdAndName_ROLE(String Content) {
+        try
+        {
+            ResultSet rs = onQuery("SELECT MAX(ID) FROM LDAP_ROLE ORDER BY ID");
+            rs.next();
+            int newId = rs.getInt("MAX(ID)") + 1;
+            onExecute("INSERT INTO LDAP_ROLE VALUES(?,?)", newId, Content);
             System.out.println("Die ID: " + newId + " wurde zum verzeichnis Hinzugefügt.");
 
 
@@ -123,17 +141,28 @@ public class DataBaseUtils extends SQLUtils {
         }
 
     }
-
-    public void editInfoLink(String Linktext, String Link_group_ID, String Sort, String Description, String Url_Active, String Url_inActive, String Active, String Auth_Level, String NewTab) {
+    public void editInfoLink(int Id, String Linktext, String Link_group_ID, String Sort, String Description, String Url_Active, String Url_inActive, String Active, String Auth_Level, String NewTab) {
 
 
         try {
-            onExecute("UPDATE LINK SET LINKTEXT,DESCRIPTION,URL_ACTIVE,URL_INACTIVE =? WHERE ID =?",Linktext, Link_group_ID, Sort, Description, Url_Active, Url_inActive, Active, Auth_Level, NewTab);
+            onExecute("UPDATE LINK SET LINKTEXT =?,LINK_GRP_ID =?,SORT =?,DESCRIPTION =?,URL_ACTIVE =?,URL_INACTIVE =?,ACTIVE =?,AUTH_LEVEL =?,NEWTAB =? WHERE ID =?",Linktext, Link_group_ID, Sort, Description, Url_Active, Url_inActive, Active, Auth_Level, NewTab, Id + 2);
+            System.out.println("Changed Info LINK_" + (Id + 2));
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println("Failed onExecute by LINK_" + Id);
         }
 
     }
+    public void editInfoLDAP_ROLE(int ID, String Content) {
+        try {
+            onExecute("UPDATE ROLE_NAME WHERE ID =?", Content, ID + 1);
+            System.out.println("Changed Info LDAP_ROLE_" + (ID + 1));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Failed onExecute by LDAP_ROLE" + ID + 1);
+        }
+    }
+
     public void deleteInfoLDAP(int id)  {
         try {
             onExecute("DELETE FROM LDAP_GRP WHERE ID =?", id);
@@ -146,11 +175,10 @@ public class DataBaseUtils extends SQLUtils {
 
 
     }
-
     public void deleteInfoLink(int id)  {
         try {
             onExecute("DELETE FROM LINK WHERE ID =?", id);
-            System.out.println("Deleted ROW_ " + (id));
+            System.out.println("Deleted ROW_" + (id));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -159,6 +187,18 @@ public class DataBaseUtils extends SQLUtils {
 
 
     }
+
+    public void deleteInfoLDAP_ROLE(int ID) {
+        try {
+            onExecute("DELETE FROM LDAP_ROLE WHERE ID =?", ID);
+            System.out.println("Deleted ROW_" + (ID));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Failed to delete ROW_ " + (ID));
+        }
+    }
+
     public List<LDAP> getAllInfos() {
         ResultSet rs;
         List<LDAP> list = new ArrayList<>();
@@ -197,4 +237,23 @@ public class DataBaseUtils extends SQLUtils {
         }
         return list;
     }
+
+    public List<LDAP_ROLE> getAllInfos_LDAP_ROLE() {
+        ResultSet rs;
+        List<LDAP_ROLE> list = new ArrayList<>();
+        try {
+            rs = onQuery("SELECT ID,ROLE_NAME FROM LDAP_ROLE ORDER BY ID");
+            while (rs.next()) {
+                list.add(new LDAP_ROLE(rs.getString("ID"), rs.getString("ROLE_NAME")));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
+
+
 }
