@@ -1,4 +1,4 @@
-package de.rub.springwebapplication.MitabeiterView;
+package de.rub.springwebapplication.Listen;
 
 public class LDAP_ROLE {
 

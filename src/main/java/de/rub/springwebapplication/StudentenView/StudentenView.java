@@ -11,7 +11,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.WebBrowser;
-import de.rub.springwebapplication.Data.DataBaseUtils;
+import de.rub.springwebapplication.Data.DatabaseUtils;
 import de.rub.springwebapplication.Login.Redirect;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.io.IOException;
 @Route("StudentView")
 public class StudentenView extends Div {
 
-    public DataBaseUtils dataBaseUtils;
+    public DatabaseUtils dataBaseUtils;
     private final Tab Startseite_WebClient;
     private final Tab Logout;
     private final VerticalLayout content;
@@ -32,7 +32,7 @@ public class StudentenView extends Div {
         System.out.println("IP: " + webBrowser.getAddress() + " " + "Opened: " + getClass());
 
 
-        dataBaseUtils = new DataBaseUtils();
+        dataBaseUtils = new DatabaseUtils();
         content = new VerticalLayout();
         content.setSpacing(true);
         Startseite_WebClient = new Tab(VaadinIcon.HOME.create(), new Span("Startseite WebClient"));
@@ -46,8 +46,6 @@ public class StudentenView extends Div {
         add(tabs, content);
 
     }
-
-
     private void setContentS(Tab tab) {
         content.removeAll();
 

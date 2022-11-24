@@ -1,10 +1,10 @@
-package de.rub.springwebapplication.MitabeiterView;
+package de.rub.springwebapplication.Listen;
 
-public class LDAP {
+public class Ldap {
 
     String id, content;
 
-    public LDAP(String pId, String pContent) {
+    public Ldap(String pId, String pContent) {
         id = pId;
         content = pContent;
     }
