@@ -186,15 +186,12 @@ public class DatabaseUtils extends SQLUtils {
 
     }
     public void addNewIdAndName_Link(String Linktext, Double Link_group_ID, Double Sort, String Description, String Url_Active, Double Url_inActive, Double Active, Double Auth_Level, Double NewTab) {
-        try
-        {
+        try {
             ResultSet rs = onQuery("SELECT MAX(ID) FROM LINK ORDER BY ID");
             rs.next();
             int newId = rs.getInt("MAX(ID)") + 1;
             onExecute("INSERT INTO LINK VALUES(?,?,?,?,?,?,?,?,?,?)", newId, Linktext, Link_group_ID, Sort, Description, Url_Active, Url_inActive, Active, Auth_Level, NewTab);
             System.out.println("Die ID: " + newId + " wurde zum verzeichnis Hinzugefügt.");
-
-
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -301,6 +298,7 @@ public class DatabaseUtils extends SQLUtils {
                         rs.getString("ACTIVE"),
                         rs.getString("AUTH_LEVEL"),
                         rs.getString("NEWTAB")));
+
             }
         }
         catch (Exception e) {
@@ -361,32 +359,6 @@ public class DatabaseUtils extends SQLUtils {
         }
         return list;
     }
-    public void createIconFiles(int i) {
-        ResultSet rs;
-        try {
-            rs = onQuery("SELECT ICON FROM ICON WHERE ID =?", i);
-            while (rs.next()) {
-                Blob aBlob = rs.getBlob("ICON");
-                InputStream is = aBlob.getBinaryStream(1, aBlob.length());
-                BufferedImage bufferedImage = ImageIO.read(is);
-                File outputfile = new File("src/main/resources/META-INF/resources/images","Icon"+i+".png");
-                if (!outputfile.exists()) {
-                    return;
-                } else {
-                    ImageIO.write(bufferedImage, "png", outputfile);
-                    onExecute("UPDATE ICON SET URL =? WHERE ID =?", "images/" + outputfile.getName(), i);
-                    if (i == 1) {
-                        System.out.println("Es wurde "+i+" Datei erstellt");
-                    } else {
-                        System.out.println("Es wurden "+i+" Dateien erstellt");
-                    }
-                }
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     public List<dbIcon> getIconImage() {
         ResultSet rs;
         List<dbIcon> list = new ArrayList<>();
@@ -417,4 +389,48 @@ public class DatabaseUtils extends SQLUtils {
             return "";
         }
     }
+    public void createIconFiles(int i) {
+        ResultSet rs;
+        try {
+            rs = onQuery("SELECT ICON FROM ICON WHERE ID =?", i);
+            while (rs.next()) {
+                Blob aBlob = rs.getBlob("ICON");
+                InputStream is = aBlob.getBinaryStream(1, aBlob.length());
+                BufferedImage bufferedImage = ImageIO.read(is);
+                File outputfile = new File("src/main/resources/META-INF/resources/images","Icon"+i+".png");
+                if (outputfile.exists()) {
+                    return;
+                } else {
+                    ImageIO.write(bufferedImage, "png", outputfile);
+                    onExecute("UPDATE ICON SET URL =? WHERE ID =?", "images/" + outputfile.getName(), i);
+                    if (i == 1) {
+                        System.out.println("Es wurde "+i+" Datei erstellt");
+                    } else {
+                        System.out.println("Es wurden "+i+" Dateien erstellt");
+                    }
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String LinkGroupId() {
+        ResultSet rs;
+        try {
+            rs = onQuery("SELECT ID FROM LINK_GRP ODER BY ID");
+            while (rs.next()) {
+                String Id = rs.getString("ID");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+
+
 }

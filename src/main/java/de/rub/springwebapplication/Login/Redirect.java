@@ -12,7 +12,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.WebBrowser;
 import de.rub.springwebapplication.MitabeiterView.MitabeiterView;
-import de.rub.springwebapplication.StudentenView.StudentenView;
 import org.ini4j.Wini;
 
 import java.io.File;
@@ -36,22 +35,11 @@ public class Redirect extends VerticalLayout {
         final WebBrowser webBrowser = UI.getCurrent().getSession().getBrowser();
         System.out.println("IP: " + webBrowser.getAddress() + " " + "Opened: " + getClass());
 
-
-
-        LoginOverlay studentenLogin = new LoginOverlay();
-
-        studentenLogin.setTitle("Studenten Login");
-        studentenLogin.setDescription("Login für Studenten");
-        studentenLogin.addLoginListener(event -> UI.getCurrent().navigate(StudentenView.class));
-
         LoginOverlay mitabeiterLogin = new LoginOverlay();
 
         mitabeiterLogin.setTitle("Mitabeiter Login");
         mitabeiterLogin.setDescription("Login für Mitabeitende");
         mitabeiterLogin.addLoginListener(event -> UI.getCurrent().navigate(MitabeiterView.class));
-
-        Button loginStudenten = new Button("Studenten Login", new Icon(VaadinIcon.USERS));
-        loginStudenten.addClickListener(event -> studentenLogin.setOpened(true));
 
         Button loginMitabeiter = new Button("Mitabeiter Login", new Icon(VaadinIcon.USER_STAR));
         loginMitabeiter.addClickListener(event -> mitabeiterLogin.setOpened(true));
@@ -78,7 +66,7 @@ public class Redirect extends VerticalLayout {
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        add(image,image2, Titel, loginMitabeiter,loginStudenten, mitabeiterLogin, studentenLogin, showimage);
+        add(image,image2, Titel, loginMitabeiter, mitabeiterLogin, showimage);
 
 
 
