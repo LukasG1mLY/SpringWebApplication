@@ -4,7 +4,6 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -251,7 +250,7 @@ public class MitabeiterView extends Div {
                 HorizontalLayout tools = new HorizontalLayout(H3, createButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
                 Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();
                 Dialog deleteDialog = new Dialog();deleteDialog.setHeaderTitle("Verzeichnis Löschen ?");deleteDialog.add("Dieser Vorgang kann nicht Rückgänig gemacht werden !");deleteDialog.getFooter().add(deleteButton1, cancelButton);deleteDialog.setCloseOnOutsideClick(false);
-                Dialog editDialog = new Dialog();editDialog.setCloseOnOutsideClick(false);editDialog.setHeaderTitle("Verzeichnis bearbeiten");editDialog.add(dialogLayout);editDialog.getFooter().add(sb1, cancelButton);editDialog.setWidth(60, Unit.PERCENTAGE);
+                Dialog editDialog = new Dialog();editDialog.setCloseOnOutsideClick(false);editDialog.setHeaderTitle("Verzeichnis bearbeiten");editDialog.setWidth(60, Unit.PERCENTAGE);
                 Dialog createDialog = new Dialog();createDialog.setCloseOnOutsideClick(false);createDialog.setHeaderTitle("Verzeichnis erstellen");createDialog.add(dialogLayout);createDialog.getFooter().add(sb2, cancelButton);createDialog.setWidth(60, Unit.PERCENTAGE);
 
                 Link_grid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_WRAP_CELL_CONTENT, GridVariant.LUMO_ROW_STRIPES);
@@ -277,7 +276,6 @@ public class MitabeiterView extends Div {
 
                     editButton.addClickListener(Click -> {
                         editDialog.open();
-
                         try {
                             tf1.setValue(Tools.getLinktext());
                         } catch (NullPointerException npe) {
@@ -323,6 +321,7 @@ public class MitabeiterView extends Div {
                         } catch (NullPointerException npe) {
                             tf5.setPlaceholder("Momentan ist nichts Vorhanden");
                         }
+                        editDialog.add(dialogLayout);editDialog.getFooter().add(sb1, cancelButton);
 
                         sb1.addClickListener(click -> {
                             if (tf1.isEmpty()) {
@@ -504,7 +503,7 @@ public class MitabeiterView extends Div {
                     });
                 });
                 closeButton.addClickListener(Click -> {
-                    gridDialog.close();deleteDialog.close();gridDialog.close();createDialog.close();;
+                    gridDialog.close();deleteDialog.close();gridDialog.close();createDialog.close();
                 });
 
                 gridDialog.add(heading, tools, LdapRole_grid);
@@ -599,7 +598,7 @@ public class MitabeiterView extends Div {
                             dataBaseUtils.deleteInfoLink_Grp(Integer.parseInt(Tools.getId()));
                             LinkGrp_grid.getDataProvider().refreshAll();
                             gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
-                            Notification.show("Erfolgreich Verzeichnis "+Tools.getId()+" Gelöscht", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
+                            Notification.show("Erfolgreich Verzeichnis "+Tools.getId()+" Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
                         });
                     });
 
@@ -658,8 +657,9 @@ public class MitabeiterView extends Div {
                 Label info = new Label("WARNUNG Dieser Vorgang kann nicht rückgängig gemacht werden");info.getStyle().set("color", "red");
                 H2 H2 = new H2("Verzeichnis-Liste: Link Tile");H2.getStyle().set("margin", "0 auto 0 0");
                 H2 H3 = new H2("");H2.getStyle().set("margin", "0 auto 0 0");
-                Button sb1 = new Button("Speichern");sb1.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
-                Button db1 = new Button("Ja, Löschen");db1.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+                Button sb1 = new Button("Speichern");sb1.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+                Button sb2 = new Button("Speichern");sb1.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+                Button db1 = new Button("Ja, Löschen");db1.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
                 Button cancelButton = new Button("Nein, Abbrechen");cancelButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
                 Button createButton = new Button("Hinzufügen");createButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SUCCESS);
                 Button closeButton = new Button(VaadinIcon.CLOSE.create());closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ERROR);
@@ -667,20 +667,21 @@ public class MitabeiterView extends Div {
                 Button minimizeButton = new Button(VaadinIcon.RESIZE_H.create());minimizeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);minimizeButton.addClickListener(Click -> LinkTile_grid.setAllRowsVisible(false));
                 TextField tf1 = new TextField("Name");tf1.setWidthFull();
                 TextField tf2 = new TextField("Description");tf2.setWidthFull();
-                TextField tf4 = new TextField("Tile Column Id");tf4.setWidthFull();
                 NumberField tf3 = new NumberField("Sort");tf3.setWidthFull();
+                NumberField tf4 = new NumberField("Tile Column Id");tf4.setWidthFull();
                 VerticalLayout dialogLayout = new VerticalLayout(tf1, tf2, tf3, tf4);dialogLayout.setPadding(false);dialogLayout.setSpacing(false);dialogLayout.setSizeFull();
                 HorizontalLayout heading = new HorizontalLayout(H2, minimizeButton, maximizeButton, closeButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
                 HorizontalLayout tools = new HorizontalLayout(H3, createButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
                 Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();gridDialog.getFooter().add();
-                Dialog deleteDialog = new Dialog();deleteDialog.setHeaderTitle("Verzeichnis Löschen ?");deleteDialog.setCloseOnOutsideClick(false);deleteDialog.add("Dieser Vorgang kann nicht Rückgänig gemacht werden !");deleteDialog.getFooter().add(db1, cancelButton);deleteDialog.setWidth(60, Unit.PERCENTAGE);
-                Dialog editDialog = new Dialog();editDialog.add(dialogLayout);editDialog.setCloseOnOutsideClick(false);editDialog.getFooter().add(sb1, cancelButton);editDialog.setWidth(60, Unit.PERCENTAGE);
+                Dialog deleteDialog = new Dialog();deleteDialog.setHeaderTitle("Verzeichnis Löschen ?");deleteDialog.setCloseOnOutsideClick(false);deleteDialog.add("Dieser Vorgang kann nicht Rückgänig gemacht werden !");deleteDialog.setWidth(60, Unit.PERCENTAGE);
+                Dialog editDialog = new Dialog();editDialog.setWidth(60, Unit.PERCENTAGE);editDialog.add(dialogLayout);editDialog.setCloseOnOutsideClick(false);editDialog.getFooter().add(sb1, cancelButton);
+                Dialog createDialog = new Dialog();createDialog.add(dialogLayout);createDialog.setCloseOnOutsideClick(false);createDialog.getFooter().add(sb2, cancelButton);createDialog.setWidth(60, Unit.PERCENTAGE);
 
                 LinkTile_grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT, GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_COLUMN_BORDERS);
                 LinkTile_grid.addColumn(Link_Tile::getId).setHeader("ID").setWidth("75px").setFlexGrow(0);
                 LinkTile_grid.addColumn(Link_Tile::getName).setHeader("Name");
-                LinkTile_grid.addColumn(Link_Tile::getDescription).setHeader("Description").setFlexGrow(0);
-                LinkTile_grid.addColumn(Link_Tile::getSort).setHeader("Sort").setFlexGrow(0);
+                LinkTile_grid.addColumn(Link_Tile::getDescription).setHeader("Description");
+                LinkTile_grid.addColumn(Link_Tile::getSort).setHeader("Sort");
                 LinkTile_grid.addColumn(Link_Tile::getTile_Column_Id).setHeader("Tile Column Id");
                 LinkTile_grid.setItems(LinkTile);
 
@@ -689,6 +690,7 @@ public class MitabeiterView extends Div {
                     Button editButton = new Button(VaadinIcon.EDIT.create());
 
                     editButton.addClickListener(Click -> {
+                        editDialog.open();
                         try {
                             tf1.setValue(Tools.getName());
                         } catch (NullPointerException npe) {
@@ -705,31 +707,32 @@ public class MitabeiterView extends Div {
                             tf3.setPlaceholder("Momentan ist nichts Vorhanden");
                         }
                         try {
-                            tf4.setValue(Tools.getTile_Column_Id());
+                            tf4.setValue(Double.valueOf(Tools.getTile_Column_Id()));
                         } catch (NullPointerException npe) {
                             tf4.setPlaceholder("Momentan ist nichts Vorhanden");
                         }
+
+                        editDialog.add(dialogLayout);editDialog.setCloseOnOutsideClick(false);editDialog.getFooter().add(sb1, cancelButton);
+
                         sb1.addClickListener(click -> {
-                            final int i;
-                            i = Integer.parseInt(Tools.getId());
-                            dataBaseUtils.editInfoLink_Tile(i, tf1.getValue(), tf2.getValue(), tf3.getValue(), tf4.getValue());
+                            int i = Integer.parseInt(Tools.getId());
+                            dataBaseUtils.editInfoLink_Tile(tf1.getValue(), tf2.getValue(), tf3.getValue(), tf4.getValue(), i);
                             LinkTile_grid.getDataProvider().refreshAll();
-                            gridDialog.close();
-                            deleteDialog.close();
-                            editDialog.close();
+                            gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                             Notification.show("Erfolgreich Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
                         });
-                        editDialog.open();
-                        editDialog.add(dialogLayout);
-                        editDialog.getFooter().add(sb1);
+                        cancelButton.addClickListener(click -> {
+                            gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
+                        });
                     });
                     editButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
                     deleteButton.addClickListener(Click -> {
                         deleteDialog.open();
+                        deleteDialog.getFooter().add(db1, cancelButton);
                         db1.addClickListener(click -> {
                             dataBaseUtils.deleteInfoLink_Tile(Integer.parseInt(Tools.getId()));
                             LinkTile_grid.getDataProvider().refreshAll();
-                            gridDialog.close();deleteDialog.close();editDialog.close();
+                            gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                             Notification.show("Erfolgreich Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
                         });
                     });
@@ -738,12 +741,11 @@ public class MitabeiterView extends Div {
                     return new HorizontalLayout(editButton, deleteButton);
                 }).setFlexGrow(0);
                 cancelButton.addClickListener(Click -> {
-                    editDialog.close();
-                    deleteDialog.close();
+                    gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                 });
                 createButton.addClickListener(Click -> {
-                    editDialog.open();
-                    sb1.addClickListener(click -> {
+                    createDialog.open();
+                    sb2.addClickListener(click -> {
                         if (tf1.isEmpty()) {
                             tf1.setValue("N/A");
                         }
@@ -754,20 +756,16 @@ public class MitabeiterView extends Div {
                             tf3.setValue(Double.valueOf("1"));
                         }
                         if (tf4.isEmpty()) {
-                            tf4.setValue("N/A");
+                            tf4.setValue(Double.valueOf("1"));;
                         }
                         dataBaseUtils.addNewIdAndName_Link_Tile(tf1.getValue(), tf2.getValue(), tf3.getValue(), tf4.getValue());
-                        gridDialog.close();
-                        deleteDialog.close();
-                        editDialog.close();
+                        gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                         Notification.show("Erfolgreich Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
                         LinkTile_grid.getDataProvider().refreshAll();
                     });
                 });
                 closeButton.addClickListener(Click -> {
-                    gridDialog.close();
-                    deleteDialog.close();
-                    editDialog.close();
+                    gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                 });
                 gridDialog.add(heading, tools, LinkTile_grid);
             });

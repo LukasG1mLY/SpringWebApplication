@@ -118,7 +118,7 @@ public class DatabaseUtils extends SQLUtils {
             System.out.println("Failed onExecute by Link group:" + id);
         }
     }
-    public void editInfoLink_Tile(int id, String pName, String pDescription, Double pSort, String pTile_Column_Id) {
+    public void editInfoLink_Tile(String pName, String pDescription, Double pSort, Double pTile_Column_Id, int id) {
         try {
             onExecute("UPDATE LINK_TILE SET NAME =?, DESCRIPTION =?, SORT =?, TILE_COLUMN_ID =? WHERE ID =?", pName, pDescription, pSort, pTile_Column_Id, id);
             System.out.println("Changed Info Link Tile:" + id);
@@ -240,7 +240,7 @@ public class DatabaseUtils extends SQLUtils {
             e.printStackTrace();
         }
     }
-    public void addNewIdAndName_Link_Tile(String pName, String pDescription, Double pSort, String pTile_Column_Id) {
+    public void addNewIdAndName_Link_Tile(String pName, String pDescription, Double pSort, Double pTile_Column_Id) {
         try
         {
             ResultSet rs = onQuery("SELECT MAX(ID) FROM LINK_TILE ORDER BY ID");
@@ -415,22 +415,5 @@ public class DatabaseUtils extends SQLUtils {
             e.printStackTrace();
         }
     }
-
-    public String LinkGroupId() {
-        ResultSet rs;
-        try {
-            rs = onQuery("SELECT ID FROM LINK_GRP ODER BY ID");
-            while (rs.next()) {
-                String Id = rs.getString("ID");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-
-
 
 }

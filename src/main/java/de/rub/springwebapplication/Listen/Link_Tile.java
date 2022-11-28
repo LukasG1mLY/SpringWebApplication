@@ -4,7 +4,7 @@ public class Link_Tile {
 
     String Id, Name, Tile_Column_Id, Sort, Description ;
 
-    public Link_Tile(String pId, String pName, String pTile_Column_Id, String pSort, String pDescription) {
+    public Link_Tile(String pId, String pName, String pDescription, String pSort, String pTile_Column_Id) {
         Id = pId;
         Name = pName;
         Description = pDescription;
@@ -24,9 +24,7 @@ public class Link_Tile {
     public void setName(String name) {
         Name = name;
     }
-    public String getTile_Column_Id() {
-        return Tile_Column_Id;
-    }
+    public String getTile_Column_Id() {return Tile_Column_Id;}
     public String getSort() {
         return Sort;
     }
