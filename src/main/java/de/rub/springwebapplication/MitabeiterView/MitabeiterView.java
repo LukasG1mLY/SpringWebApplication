@@ -756,7 +756,7 @@ public class MitabeiterView extends Div {
                             tf3.setValue(Double.valueOf("1"));
                         }
                         if (tf4.isEmpty()) {
-                            tf4.setValue(Double.valueOf("1"));;
+                            tf4.setValue(Double.valueOf("1"));
                         }
                         dataBaseUtils.addNewIdAndName_Link_Tile(tf1.getValue(), tf2.getValue(), tf3.getValue(), tf4.getValue());
                         gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
