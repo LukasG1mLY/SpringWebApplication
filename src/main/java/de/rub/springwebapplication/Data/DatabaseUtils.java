@@ -98,7 +98,7 @@ public class DatabaseUtils extends SQLUtils {
             System.out.println("Failed onExecute by LDAP_ROLE " + ID);
         }
     }
-    public void editInfoLink(int Id, String Linktext, Double Link_group_ID, Double Sort, String Description, String Url_Active, Double Url_inActive, Double Active, Double Auth_Level, Double NewTab) {
+    public void editInfoLink(int Id, String Linktext, String Link_group_ID, Double Sort, String Description, String Url_Active, Double Url_inActive, Double Active, Double Auth_Level, Double NewTab) {
 
         try {
             onExecute("UPDATE LINK SET LINKTEXT =?,LINK_GRP_ID =?,SORT =?,DESCRIPTION =?,URL_ACTIVE =?,URL_INACTIVE =?,ACTIVE =?,AUTH_LEVEL =?,NEWTAB =? WHERE ID =?",Linktext, Link_group_ID, Sort, Description, Url_Active, Url_inActive, Active, Auth_Level, NewTab, Id);
@@ -415,5 +415,52 @@ public class DatabaseUtils extends SQLUtils {
             e.printStackTrace();
         }
     }
+    public List<Link_grp_Id> getInfoLink_Grp_Id() {
+        List<Link_grp_Id> list = new ArrayList<>();
+        ResultSet rs;
+        try {
+            rs = onQuery("SELECT ID FROM LINK_GRP");
+            while (rs.next()) {
+                list.add(new Link_grp_Id(
+                        rs.getString("ID")));
+            }
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    public String getInfo_Link_Grp_Linktext(int l) {
+        ResultSet rs;
+        try {
+            rs = onQuery("SELECT GRP_LINKTEXT FROM LINK_GRP WHERE ID =?", l);
+            rs.next();
+            return rs.getString("GRP_LINKTEXT");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public List<AllinOne> getAll() {
+        ResultSet rs;
+        List<AllinOne> list = new ArrayList<>();
+        try {
+            rs = onQuery("SELECT L.*,LG.GRP_LINKTEXT FROM LINK L CROSS JOIN LINK_GRP LG WHERE L.LINK_GRP_ID = LG.ID ORDER BY L.ID");
+            System.out.println(rs);
+            while (rs.next()) {
+                list.add(new AllinOne(
+                        rs.getString("ID"),
+                        rs.getString("LINKTEXT"),
+                        rs.getString("GRP_LINKTEXT"),
+                        rs.getString("DESCRIPTION"),
+                        rs.getString("URL_ACTIVE")));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

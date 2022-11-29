@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -27,6 +28,7 @@ import de.rub.springwebapplication.Data.DatabaseUtils;
 import de.rub.springwebapplication.Listen.*;
 import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 @PageTitle("MitabeiterView")
 @Route("MitabeiterView")
@@ -65,7 +67,16 @@ public class MitabeiterView extends Div {
             Paragraph Info_Text_Studenten = new Paragraph();
             Info_Text_Studenten.setText(dataBaseUtils.getInfoStaff());
 
-            content.add(Titel, Info_Text_Studenten);
+            Grid<AllinOne> All_grid = new Grid<>();
+            List<AllinOne> list = dataBaseUtils.getAll();
+            All_grid.addColumn(de.rub.springwebapplication.Listen.AllinOne::getId).setHeader("ID").setFlexGrow(0);
+            All_grid.addColumn(de.rub.springwebapplication.Listen.AllinOne::getLinktext).setHeader("Linktext").setFlexGrow(1);
+            All_grid.addColumn(de.rub.springwebapplication.Listen.AllinOne::getGRP_LINKTEXT).setHeader("Grp Linktext");
+            All_grid.addColumn(de.rub.springwebapplication.Listen.AllinOne::getDescription).setHeader("Description");
+            All_grid.addColumn(de.rub.springwebapplication.Listen.AllinOne::getUrl_active).setHeader("URL Active");
+            All_grid.setItems(list);
+
+            content.add(Titel, Info_Text_Studenten, All_grid);
 
         }
         else if (tab.equals(Bearbeiten)) {
@@ -224,6 +235,7 @@ public class MitabeiterView extends Div {
             Link_item.addClickListener(e -> {
 
                 List<de.rub.springwebapplication.Listen.Link> Link = dataBaseUtils.getInfo_Link();
+
                 Grid<Link> Link_grid = new Grid<>();
                 Label info = new Label("WARNUNG Dieser Vorgang kann nicht rückgängig gemacht werden");info.getStyle().set("color", "red");
                 H2 H2 = new H2("Verzeichnis-Liste: Link");H2.getStyle().set("margin", "0 auto 0 0");
@@ -239,7 +251,7 @@ public class MitabeiterView extends Div {
                 TextField tf1 = new TextField("Linktext");tf1.setWidthFull();
                 TextField tf4 = new TextField("Description");tf4.setWidthFull();
                 TextField tf5 = new TextField("URL Active");tf5.setWidthFull();
-                NumberField tf2 = new NumberField("Link Group ID(Number Only)");tf2.setWidthFull();
+                TextField tf2 = new TextField("Link Group ID(Number Only)");tf2.setWidthFull();
                 NumberField tf3 = new NumberField("Sort(Number Only)");tf3.setWidthFull();
                 NumberField tf6 = new NumberField("URL InActive(Number Only)");tf6.setWidthFull();
                 NumberField tf7 = new NumberField("Active(Number Only)");tf7.setWidthFull();
@@ -256,7 +268,7 @@ public class MitabeiterView extends Div {
                 Link_grid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_WRAP_CELL_CONTENT, GridVariant.LUMO_ROW_STRIPES);
                 Link_grid.setAllRowsVisible(false);
                 Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getId).setHeader("ID").setHeader("ID").setWidth("75px").setFlexGrow(0);
-                Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getLinktext).setHeader("Linktext");
+                Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getLinktext).setHeader("Link-text");
                 Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getLink_grp_id).setHeader("Link GRP ID");
                 Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getSort).setHeader("Sort");
                 Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getDescription).setHeader("Description");
@@ -268,13 +280,20 @@ public class MitabeiterView extends Div {
                 Link_grid.setItems(Link);
                 Link_grid.setVisible(gridDialog.isOpened());
 
+
+
+
                 Link_grid.addComponentColumn(Tools -> {
+
+
+                    int l = Integer.parseInt(Tools.getLink_grp_id());
                     int i = Integer.parseInt(Tools.getId());
 
                     Button deleteButton = new Button(VaadinIcon.TRASH.create());deleteButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ERROR);
                     Button editButton = new Button(VaadinIcon.EDIT.create());editButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
                     editButton.addClickListener(Click -> {
+                        System.out.println(l);
                         editDialog.open();
                         try {
                             tf1.setValue(Tools.getLinktext());
@@ -282,7 +301,7 @@ public class MitabeiterView extends Div {
                             tf1.setPlaceholder("Momentan ist nichts Vorhanden");
                         }
                         try {
-                            tf2.setValue(Double.valueOf(Tools.getLink_grp_id()));
+                            tf2.setValue(dataBaseUtils.getInfo_Link_Grp_Linktext(l));
                         } catch (NullPointerException npe) {
                             tf2.setPlaceholder("Momentan ist nichts Vorhanden");
                         }
@@ -328,7 +347,7 @@ public class MitabeiterView extends Div {
                                 tf1.setValue("N/A");
                             }
                             if (tf2.isEmpty()) {
-                                tf2.setValue(Double.valueOf("0"));
+                                tf2.setValue("Kein Verbundener Eintrag Gefunden");
                             }
                             if (tf3.isEmpty()) {
                                 tf3.setValue(Double.valueOf("0"));
@@ -385,7 +404,7 @@ public class MitabeiterView extends Div {
                             tf1.setValue("N/A");
                         }
                         if (tf2.isEmpty()) {
-                            tf2.setValue(Double.valueOf("1"));
+                            tf2.setValue("Unsichtbar");
                         }
                         if (tf3.isEmpty()) {
                             tf3.setValue(Double.valueOf("1"));
@@ -408,20 +427,14 @@ public class MitabeiterView extends Div {
                         if (tf9.isEmpty()) {
                             tf9.setValue(Double.valueOf("1"));
                         }
-                        dataBaseUtils.addNewIdAndName_Link(tf1.getValue(), tf2.getValue(), tf3.getValue(), tf4.getValue(), tf5.getValue(), tf6.getValue(), tf7.getValue(), tf8.getValue(), tf9.getValue());
+                        dataBaseUtils.addNewIdAndName_Link(tf1.getValue(), Double.valueOf(tf2.getValue()), tf3.getValue(), tf4.getValue(), tf5.getValue(), tf6.getValue(), tf7.getValue(), tf8.getValue(), tf9.getValue());
                         Link_grid.getDataProvider().refreshAll();
-                        gridDialog.close();
-                        deleteDialog.close();
-                        editDialog.close();
-                        createDialog.close();
+                        gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                         Notification.show("Erfolgreich Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
                     });
                 });
                 closeButton.addClickListener(Click -> {
-                    gridDialog.close();
-                    deleteDialog.close();
-                    editDialog.close();
-                    createDialog.close();
+                    gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                 });
 
                 gridDialog.add(heading, tools, Link_grid);
@@ -509,10 +522,8 @@ public class MitabeiterView extends Div {
                 gridDialog.add(heading, tools, LdapRole_grid);
             });
             Link_Grp_item.addClickListener(e -> {
-
                 List<Link_grp> LinkGrp = dataBaseUtils.getInfo_Link_Grp();
                 Grid<Link_grp> LinkGrp_grid = new Grid<>();
-
                 Label info = new Label("WARNUNG Dieser Vorgang kann nicht rückgängig gemacht werden");info.getStyle().set("color", "red");
                 H2 H2 = new H2("Verzeichnis-Liste: Link Group");H2.getStyle().set("margin", "0 auto 0 0");
                 H2 H3 = new H2("");H2.getStyle().set("margin", "0 auto 0 0");
@@ -532,7 +543,7 @@ public class MitabeiterView extends Div {
                 VerticalLayout dialogLayout = new VerticalLayout(tf1, tf2, tf3, tf4, tf5);dialogLayout.setPadding(false);dialogLayout.setSpacing(false);dialogLayout.setSizeFull();
                 HorizontalLayout heading = new HorizontalLayout(H2, minimizeButton, maximizeButton, closeButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
                 HorizontalLayout tools = new HorizontalLayout(H3, createButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
-                Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();
+                Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();gridDialog.add(heading, tools, LinkGrp_grid);
                 Dialog deleteDialog = new Dialog();deleteDialog.setWidth(60, Unit.PERCENTAGE);
                 Dialog editDialog = new Dialog();editDialog.setWidth(60, Unit.PERCENTAGE);editDialog.add(tf1, tf2, tf3, tf4, tf5);editDialog.getFooter().add(sb2, cancelButton);
                 Dialog createDialog = new Dialog();createDialog.setWidth(60, Unit.PERCENTAGE);
@@ -608,10 +619,7 @@ public class MitabeiterView extends Div {
                 LinkGrp_grid.setVisible(gridDialog.isOpened());
 
                 cancelButton.addClickListener(Click -> {
-                    editDialog.close();
-                    deleteDialog.close();
-                    createDialog.close();
-                    gridDialog.close();
+                    editDialog.close();deleteDialog.close();createDialog.close();gridDialog.close();
                 });
                 createButton.addClickListener(Click -> {
                     createDialog.open();
@@ -642,13 +650,8 @@ public class MitabeiterView extends Div {
                     });
                 });
                 closeButton.addClickListener(Click -> {
-                    editDialog.close();
-                    deleteDialog.close();
-                    createDialog.close();
-                    gridDialog.close();
+                    editDialog.close();deleteDialog.close();createDialog.close();gridDialog.close();
                 });
-
-                gridDialog.add(heading, tools, LinkGrp_grid);
             });
             Link_Tile_item.addClickListener(e -> {
 
