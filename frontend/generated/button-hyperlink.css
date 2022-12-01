@@ -1,0 +1,4 @@
+:host([theme~="link"]) [part="label"] {
+    text-decoration: underline;
+    cursor: pointer;
+}

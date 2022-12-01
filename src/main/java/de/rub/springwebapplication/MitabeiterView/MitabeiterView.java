@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -21,6 +22,8 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.WebBrowser;
@@ -29,10 +32,8 @@ import de.rub.springwebapplication.Listen.*;
 import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.Integer.parseInt;
-import static java.lang.String.valueOf;
 
 @PageTitle("MitabeiterView")
 @Route("MitabeiterView")
@@ -229,6 +230,8 @@ public class MitabeiterView extends Div {
                 Grid<Link> Link_grid = new Grid<>();
                 List<Link> list = dataBaseUtils.getAll();
                 List<Link_grp_Id> List = dataBaseUtils.getInfoLink_Grp_Id();
+                List<Links> links = dataBaseUtils.getLinks();
+
                 Label info = new Label("WARNUNG Dieser Vorgang kann nicht rückgängig gemacht werden");info.getStyle().set("color", "red");
                 H2 H2 = new H2("Verzeichnis-Liste: Link");H2.getStyle().set("margin", "0 auto 0 0");
                 H2 H3 = new H2("");H2.getStyle().set("margin", "0 auto 0 0");
@@ -243,16 +246,16 @@ public class MitabeiterView extends Div {
                 Button addLinkGroup = new Button("Link Group Hinzufügen");addLinkGroup.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SUCCESS);addLinkGroup.setWidthFull();
                 TextField tf1 = new TextField("Linktext");tf1.setWidthFull();
                 TextField tf4 = new TextField("Description");tf4.setWidthFull();
-                TextField tf5 = new TextField("URL Active");tf5.setWidthFull();
+                ComboBox<Links> tf5 = new ComboBox<>("URL Active");tf5.setItems(links);tf5.setItemLabelGenerator(Links::getLinks);tf5.setWidthFull();
                 ComboBox<Link_grp_Id> tf2 = new ComboBox<>("Link Group");tf2.setItems(List);tf2.setItemLabelGenerator(Link_grp_Id::getGrp_Linktext);tf2.setWidthFull();
                 NumberField tf3 = new NumberField("Sort(Number Only)");tf3.setWidthFull();
                 NumberField tf6 = new NumberField("URL InActive(Number Only)");tf6.setWidthFull();
-                NumberField tf7 = new NumberField("Active(Number Only)");tf7.setWidthFull();
+                NumberField tf7 = new NumberField();tf7.setLabel("I accept the terms and conditions");tf7.setWidthFull();
                 NumberField tf8 = new NumberField("Auth Level(Number Only)");tf8.setWidthFull();
                 NumberField tf9 = new NumberField("NewTab(Number Only)");tf9.setWidthFull();
                 HorizontalLayout heading = new HorizontalLayout(H2, minimizeButton, maximizeButton, closeButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
                 HorizontalLayout tools = new HorizontalLayout(H3, createButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
-                VerticalLayout dialogLayout = new VerticalLayout(tf1, tf2, tf3, tf4, tf5, tf6, tf7, tf8, tf9);dialogLayout.setPadding(false);dialogLayout.setSpacing(false);dialogLayout.setWidth(75, Unit.PERCENTAGE);
+                VerticalLayout dialogLayout = new VerticalLayout(tf1, tf2, tf3, tf4, tf5, tf6, tf7, tf8, tf9);dialogLayout.setPadding(false);dialogLayout.setSpacing(false);dialogLayout.setWidthFull();
                 Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();
                 Dialog deleteDialog = new Dialog();deleteDialog.setHeaderTitle("Verzeichnis Löschen ?");deleteDialog.add("Dieser Vorgang kann nicht Rückgänig gemacht werden !");deleteDialog.getFooter().add(deleteButton1, cancelButton);deleteDialog.setCloseOnOutsideClick(false);
                 Dialog editDialog = new Dialog();editDialog.setCloseOnOutsideClick(false);editDialog.setHeaderTitle("Verzeichnis bearbeiten");editDialog.setWidth(60, Unit.PERCENTAGE);
@@ -260,10 +263,17 @@ public class MitabeiterView extends Div {
 
                 Link_grid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_WRAP_CELL_CONTENT, GridVariant.LUMO_ROW_STRIPES);
                 Link_grid.setAllRowsVisible(false);
-                Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getId).setHeader("ID").setSortable(true).setFlexGrow(0);
-                Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getLinktext).setHeader("Linktext").setSortable(true);
-                Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getGrp_Linktext).setHeader("Grp Linktext").setSortable(true);
-                Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getDescription).setHeader("Description").setSortable(true);
+                Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getId).setHeader("ID").setSortable(true).setAutoWidth(true);
+                Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getLinktext).setHeader("Linktext").setSortable(true).setAutoWidth(true);
+                Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getGrp_Linktext).setHeader("Grp Linktext").setSortable(true).setAutoWidth(true);
+                Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getSort).setHeader("Sort").setSortable(true).setAutoWidth(true);
+                Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getDescription).setHeader("Description").setSortable(true).setAutoWidth(true);
+                Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getUrl_active).setHeader("Link").setSortable(true).setAutoWidth(true).setKey("Link");
+                Link_grid.addColumn(new ComponentRenderer<>(item ->  {
+                    Anchor anchor = new Anchor();
+                    anchor.setHref(item.getUrl_active());
+                    return anchor;
+                })).setHeader("Link");
                 Link_grid.setItems(list);
                 Link_grid.setVisible(gridDialog.isOpened());
                 Link_grid.addComponentColumn(Tools -> {
@@ -294,11 +304,6 @@ public class MitabeiterView extends Div {
                             tf4.setValue((Tools.getDescription()));
                         } catch (NullPointerException npe) {
                             tf4.setPlaceholder("Momentan ist nichts Vorhanden");
-                        }
-                        try {
-                            tf5.setValue(Tools.getUrl_active());
-                        } catch (NullPointerException npe) {
-                            tf5.setPlaceholder("Momentan keine Beschreibung Vorhanden");
                         }
                         try {
                             tf6.setValue(Double.valueOf(Tools.getUrl_inactive()));
@@ -346,10 +351,7 @@ public class MitabeiterView extends Div {
                 }).setFlexGrow(0);
 
                 cancelButton.addClickListener(Click -> {
-                    gridDialog.close();
-                    deleteDialog.close();
-                    editDialog.close();
-                    createDialog.close();
+                    gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                 });
                 createButton.addClickListener(Click -> {
                     createDialog.open();
@@ -362,9 +364,6 @@ public class MitabeiterView extends Div {
                         }
                         if (tf4.isEmpty()) {
                             tf4.setValue("N/A");
-                        }
-                        if (tf5.isEmpty()) {
-                            tf5.setValue("N/A");
                         }
                         if (tf6.isEmpty()) {
                             tf6.setValue(Double.valueOf("1"));
@@ -379,7 +378,7 @@ public class MitabeiterView extends Div {
                             tf9.setValue(Double.valueOf("0"));
                         }
                         Integer tf2_Info = tf2.getValue().getId();
-                        dataBaseUtils.addNewIdAndName_Link(tf1.getValue(), tf2_Info, tf3.getValue(), tf4.getValue(), tf5.getValue(), tf6.getValue(), tf7.getValue(), tf8.getValue(), tf9.getValue());
+                        dataBaseUtils.addNewIdAndName_Link(tf1.getValue(), tf2_Info, tf3.getValue(), tf4.getValue(), tf5.getValue().getLinks(), tf6.getValue(), tf7.getValue(), tf8.getValue(), tf9.getValue());
                         Link_grid.getDataProvider().refreshAll();
                         gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                         Notification.show("Erfolgreich Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);

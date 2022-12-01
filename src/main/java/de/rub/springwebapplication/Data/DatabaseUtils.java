@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 public class DatabaseUtils extends SQLUtils {
@@ -95,7 +94,7 @@ public class DatabaseUtils extends SQLUtils {
             System.out.println("Failed onExecute by LDAP_ROLE " + ID);
         }
     }
-    public void editInfoLink(int Id, String Linktext, Integer Link_group_ID, Double Sort, String Description, String Url_Active, Double Url_inActive, Double Active, Double Auth_Level, Double NewTab) {
+    public void editInfoLink(int Id, String Linktext, Integer Link_group_ID, Double Sort, String Description, Links Url_Active, Double Url_inActive, Double Active, Double Auth_Level, Double NewTab) {
 
         try {
             onExecute("UPDATE LINK SET LINKTEXT =?,LINK_GRP_ID =?,SORT =?,LINK_DESCRIPTION =?,URL_ACTIVE =?,URL_INACTIVE =?,ACTIVE =?,AUTH_LEVEL =?,NEWTAB =? WHERE ID =?",Linktext, Link_group_ID, Sort, Description, Url_Active, Url_inActive, Active, Auth_Level, NewTab, Id);
@@ -376,7 +375,23 @@ public class DatabaseUtils extends SQLUtils {
         }
         return list;
     }
-    public String getInfo_Link_Grp_Linktext(int l) {
+    public List<Links> getLinks() {
+        List<Links> list = new ArrayList<>();
+        ResultSet rs;
+        try {
+            rs = onQuery("SELECT * FROM LINK ORDER BY URL_ACTIVE ");
+            while (rs.next()) {
+                list.add(new Links(
+                        rs.getString("URL_ACTIVE"),
+                        rs.getInt("ID")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+        public String getInfo_Link_Grp_Linktext(int l) {
         ResultSet rs;
         try {
             rs = onQuery("SELECT GRP_LINKTEXT FROM LINK_GRP WHERE ID =?", l);
@@ -388,7 +403,7 @@ public class DatabaseUtils extends SQLUtils {
         }
         return "";
     }
-    public List<Link> getAll() {
+         public List<Link> getAll() {
         ResultSet rs;
         List<Link> list = new ArrayList<>();
         try {
@@ -413,4 +428,5 @@ public class DatabaseUtils extends SQLUtils {
         }
         return list;
     }
+
 }
