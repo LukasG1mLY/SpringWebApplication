@@ -3,7 +3,8 @@ package de.rub.springwebapplication.Listen;
 public class Link {
     String Id;
     String Linktext;
-    String GRP_LINKTEXT;
+    String Grp_Linktext;
+    String description;
     String Sort;
     String Description;
     String Url_active;
@@ -15,7 +16,8 @@ public class Link {
 
     public Link(String pId,
                 String pLinktext,
-                String pGRP_LINKTEXT,
+                String pGrp_Linktext,
+                String pdescription,
                 String pSort,
                 String pDescription,
                 String pUrl_active,
@@ -26,7 +28,8 @@ public class Link {
 
         Id = pId;
         Linktext = pLinktext;
-        GRP_LINKTEXT = pGRP_LINKTEXT;
+        Grp_Linktext = pGrp_Linktext;
+        description = pdescription;
         Sort = pSort;
         Description = pDescription;
         Url_active = pUrl_active;
@@ -43,9 +46,12 @@ public class Link {
     public String getLinktext() {
         return Linktext;
     }
-
-    public String getLink_grp_id() {
-        return GRP_LINKTEXT;
+    public String getGrp_Linktext() {
+        if (description == null) {
+            return Grp_Linktext;
+        } else {
+            return Grp_Linktext + " --> " + description;
+        }
     }
 
     public String getSort() {
@@ -76,9 +82,4 @@ public class Link {
         return Newtab;
     }
 
-    public void setDescription(String description) {
-        Description = description;
-    }
 }
-
-

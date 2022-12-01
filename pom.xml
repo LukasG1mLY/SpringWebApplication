@@ -58,7 +58,12 @@
             <version>23.0.0</version>
             <scope>compile</scope>
         </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-renderer-flow</artifactId>
+			<version>23.2.7</version>
+		</dependency>
+	</dependencies>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

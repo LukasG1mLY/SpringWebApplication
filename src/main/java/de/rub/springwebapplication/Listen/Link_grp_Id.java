@@ -2,15 +2,27 @@ package de.rub.springwebapplication.Listen;
 
 public class Link_grp_Id {
 
-    String Id;
+    String Grp_Linktext, Description;
+    Integer Id;
 
-    public Link_grp_Id(String pId) {
-        Id = pId;
-    }
-    public String getId() {
+    public Integer getId() {
         return Id;
     }
-    public void setId(String id) {
-        Id = id;
+
+    public Link_grp_Id(String pGrp_Linktext, String pDiscription, Integer pId) {
+
+
+
+        Grp_Linktext = pGrp_Linktext;
+        Description = pDiscription;
+        Id = pId;
+
+    }
+    public String getGrp_Linktext() {
+        if (Description == null) {
+            return Grp_Linktext;
+        } else {
+            return Grp_Linktext +  " --> " + Description;
+        }
     }
 }

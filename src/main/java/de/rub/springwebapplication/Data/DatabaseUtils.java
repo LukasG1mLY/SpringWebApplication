@@ -3,15 +3,12 @@ package de.rub.springwebapplication.Data;
 import de.rub.springwebapplication.Listen.*;
 import org.ini4j.Wini;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class DatabaseUtils extends SQLUtils {
@@ -98,10 +95,10 @@ public class DatabaseUtils extends SQLUtils {
             System.out.println("Failed onExecute by LDAP_ROLE " + ID);
         }
     }
-    public void editInfoLink(int Id, String Linktext, String Link_group_ID, Double Sort, String Description, String Url_Active, Double Url_inActive, Double Active, Double Auth_Level, Double NewTab) {
+    public void editInfoLink(int Id, String Linktext, Integer Link_group_ID, Double Sort, String Description, String Url_Active, Double Url_inActive, Double Active, Double Auth_Level, Double NewTab) {
 
         try {
-            onExecute("UPDATE LINK SET LINKTEXT =?,LINK_GRP_ID =?,SORT =?,DESCRIPTION =?,URL_ACTIVE =?,URL_INACTIVE =?,ACTIVE =?,AUTH_LEVEL =?,NEWTAB =? WHERE ID =?",Linktext, Link_group_ID, Sort, Description, Url_Active, Url_inActive, Active, Auth_Level, NewTab, Id);
+            onExecute("UPDATE LINK SET LINKTEXT =?,LINK_GRP_ID =?,SORT =?,LINK_DESCRIPTION =?,URL_ACTIVE =?,URL_INACTIVE =?,ACTIVE =?,AUTH_LEVEL =?,NEWTAB =? WHERE ID =?",Linktext, Link_group_ID, Sort, Description, Url_Active, Url_inActive, Active, Auth_Level, NewTab, Id);
             System.out.println("Changed Info LINK_" + (Id));
         } catch (SQLException e) {
             e.printStackTrace();
@@ -148,8 +145,6 @@ public class DatabaseUtils extends SQLUtils {
             e.printStackTrace();
             System.out.println("Failed to delete ROW_ " + (id));
         }
-
-
     }
     public void deleteInfoLDAP_ROLE(int ID) {
         try {
@@ -185,7 +180,7 @@ public class DatabaseUtils extends SQLUtils {
 
 
     }
-    public void addNewIdAndName_Link(String Linktext, Double Link_group_ID, Double Sort, String Description, String Url_Active, Double Url_inActive, Double Active, Double Auth_Level, Double NewTab) {
+    public void addNewIdAndName_Link(String Linktext, Integer Link_group_ID, Double Sort, String Description, String Url_Active, Double Url_inActive, Double Active, Double Auth_Level, Double NewTab) {
         try {
             ResultSet rs = onQuery("SELECT MAX(ID) FROM LINK ORDER BY ID");
             rs.next();
@@ -281,31 +276,6 @@ public class DatabaseUtils extends SQLUtils {
         }
         return list;
     }
-    public List<Link> getInfo_Link() {
-        ResultSet rs;
-        List<Link> list = new ArrayList<>();
-        try {
-            rs = onQuery("SELECT * FROM LINK ORDER BY ID");
-            while (rs.next()) {
-                list.add(new Link(
-                        rs.getString("ID"),
-                        rs.getString("LINKTEXT"),
-                        rs.getString("LINK_GRP_ID"),
-                        rs.getString("SORT"),
-                        rs.getString("DESCRIPTION"),
-                        rs.getString("URL_ACTIVE"),
-                        rs.getString("URL_INACTIVE"),
-                        rs.getString("ACTIVE"),
-                        rs.getString("AUTH_LEVEL"),
-                        rs.getString("NEWTAB")));
-
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
     public List<LDAP_ROLE> getAllInfos_LDAP_ROLE() {
         ResultSet rs;
         List<LDAP_ROLE> list = new ArrayList<>();
@@ -332,7 +302,7 @@ public class DatabaseUtils extends SQLUtils {
                         rs.getString("ICON_ID"),
                         rs.getString("TILE_ID"),
                         rs.getString("SORT"),
-                        rs.getString("DESCRIPTION")));
+                        rs.getString("LINK_GRP_DESCRIPTION")));
             }
         }
         catch (Exception e) {
@@ -389,40 +359,16 @@ public class DatabaseUtils extends SQLUtils {
             return "";
         }
     }
-    public void createIconFiles(int i) {
-        ResultSet rs;
-        try {
-            rs = onQuery("SELECT ICON FROM ICON WHERE ID =?", i);
-            while (rs.next()) {
-                Blob aBlob = rs.getBlob("ICON");
-                InputStream is = aBlob.getBinaryStream(1, aBlob.length());
-                BufferedImage bufferedImage = ImageIO.read(is);
-                File outputfile = new File("src/main/resources/META-INF/resources/images","Icon"+i+".png");
-                if (outputfile.exists()) {
-                    return;
-                } else {
-                    ImageIO.write(bufferedImage, "png", outputfile);
-                    onExecute("UPDATE ICON SET URL =? WHERE ID =?", "images/" + outputfile.getName(), i);
-                    if (i == 1) {
-                        System.out.println("Es wurde "+i+" Datei erstellt");
-                    } else {
-                        System.out.println("Es wurden "+i+" Dateien erstellt");
-                    }
-                }
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     public List<Link_grp_Id> getInfoLink_Grp_Id() {
         List<Link_grp_Id> list = new ArrayList<>();
         ResultSet rs;
         try {
-            rs = onQuery("SELECT ID FROM LINK_GRP");
+            rs = onQuery("SELECT GRP_LINKTEXT,LINK_GRP_DESCRIPTION,ID FROM LINK_GRP ORDER BY GRP_LINKTEXT");
             while (rs.next()) {
                 list.add(new Link_grp_Id(
-                        rs.getString("ID")));
+                        rs.getString("GRP_LINKTEXT"),
+                        rs.getString("LINK_GRP_DESCRIPTION"),
+                        rs.getInt("ID")));
             }
 
         } catch (SQLException e) {
@@ -442,20 +388,24 @@ public class DatabaseUtils extends SQLUtils {
         }
         return "";
     }
-
-    public List<AllinOne> getAll() {
+    public List<Link> getAll() {
         ResultSet rs;
-        List<AllinOne> list = new ArrayList<>();
+        List<Link> list = new ArrayList<>();
         try {
-            rs = onQuery("SELECT L.*,LG.GRP_LINKTEXT FROM LINK L CROSS JOIN LINK_GRP LG WHERE L.LINK_GRP_ID = LG.ID ORDER BY L.ID");
-            System.out.println(rs);
+            rs = onQuery("SELECT L.*,LG.GRP_LINKTEXT,LG.LINK_GRP_DESCRIPTION,LG.ID FROM LINK L CROSS JOIN LINK_GRP LG WHERE L.LINK_GRP_ID = LG.ID ORDER BY L.ID");
             while (rs.next()) {
-                list.add(new AllinOne(
+                list.add(new Link(
                         rs.getString("ID"),
                         rs.getString("LINKTEXT"),
                         rs.getString("GRP_LINKTEXT"),
-                        rs.getString("DESCRIPTION"),
-                        rs.getString("URL_ACTIVE")));
+                        rs.getString("LINK_GRP_DESCRIPTION"),
+                        rs.getString("SORT"),
+                        rs.getString("LINK_DESCRIPTION"),
+                        rs.getString("URL_ACTIVE"),
+                        rs.getString("URL_INACTIVE"),
+                        rs.getString("ACTIVE"),
+                        rs.getString("AUTH_LEVEL"),
+                        rs.getString("NEWTAB")));
             }
         }
         catch (Exception e) {
