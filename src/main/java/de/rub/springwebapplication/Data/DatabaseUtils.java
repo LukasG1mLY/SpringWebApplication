@@ -94,7 +94,7 @@ public class DatabaseUtils extends SQLUtils {
             System.out.println("Failed onExecute by LDAP_ROLE " + ID);
         }
     }
-    public void editInfoLink(int Id, String Linktext, Integer Link_group_ID, Double Sort, String Description, Links Url_Active, Double Url_inActive, Double Active, Double Auth_Level, Double NewTab) {
+    public void editInfoLink(int Id, String Linktext, Integer Link_group_ID, Double Sort, String Description, String Url_Active, Integer Url_inActive, Integer Active, Double Auth_Level, Integer NewTab) {
 
         try {
             onExecute("UPDATE LINK SET LINKTEXT =?,LINK_GRP_ID =?,SORT =?,LINK_DESCRIPTION =?,URL_ACTIVE =?,URL_INACTIVE =?,ACTIVE =?,AUTH_LEVEL =?,NEWTAB =? WHERE ID =?",Linktext, Link_group_ID, Sort, Description, Url_Active, Url_inActive, Active, Auth_Level, NewTab, Id);
@@ -179,7 +179,7 @@ public class DatabaseUtils extends SQLUtils {
 
 
     }
-    public void addNewIdAndName_Link(String Linktext, Integer Link_group_ID, Double Sort, String Description, String Url_Active, Double Url_inActive, Double Active, Double Auth_Level, Double NewTab) {
+    public void addNewIdAndName_Link(String Linktext, Integer Link_group_ID, Double Sort, String Description, String Url_Active, Boolean Url_inActive, Boolean Active, Double Auth_Level, Boolean NewTab) {
         try {
             ResultSet rs = onQuery("SELECT MAX(ID) FROM LINK ORDER BY ID");
             rs.next();
@@ -390,20 +390,7 @@ public class DatabaseUtils extends SQLUtils {
         }
         return list;
     }
-
-        public String getInfo_Link_Grp_Linktext(int l) {
-        ResultSet rs;
-        try {
-            rs = onQuery("SELECT GRP_LINKTEXT FROM LINK_GRP WHERE ID =?", l);
-            rs.next();
-            return rs.getString("GRP_LINKTEXT");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-         public List<Link> getAll() {
+    public List<Link> getAll() {
         ResultSet rs;
         List<Link> list = new ArrayList<>();
         try {
@@ -428,5 +415,4 @@ public class DatabaseUtils extends SQLUtils {
         }
         return list;
     }
-
 }

@@ -32,6 +32,7 @@ import de.rub.springwebapplication.Listen.*;
 import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import static java.lang.Integer.parseInt;
 
@@ -231,7 +232,6 @@ public class MitabeiterView extends Div {
                 List<Link> list = dataBaseUtils.getAll();
                 List<Link_grp_Id> List = dataBaseUtils.getInfoLink_Grp_Id();
                 List<Links> links = dataBaseUtils.getLinks();
-
                 Label info = new Label("WARNUNG Dieser Vorgang kann nicht rückgängig gemacht werden");info.getStyle().set("color", "red");
                 H2 H2 = new H2("Verzeichnis-Liste: Link");H2.getStyle().set("margin", "0 auto 0 0");
                 H2 H3 = new H2("");H2.getStyle().set("margin", "0 auto 0 0");
@@ -248,14 +248,15 @@ public class MitabeiterView extends Div {
                 TextField tf4 = new TextField("Description");tf4.setWidthFull();
                 ComboBox<Links> tf5 = new ComboBox<>("URL Active");tf5.setItems(links);tf5.setItemLabelGenerator(Links::getLinks);tf5.setWidthFull();
                 ComboBox<Link_grp_Id> tf2 = new ComboBox<>("Link Group");tf2.setItems(List);tf2.setItemLabelGenerator(Link_grp_Id::getGrp_Linktext);tf2.setWidthFull();
+                Checkbox tf6 = new Checkbox();tf6.setLabel("URL Inaktiv");tf6.setWidthFull();
+                Checkbox tf7 = new Checkbox();tf7.setLabel("URL Aktivieren");tf7.setWidthFull();
+                Checkbox tf9 = new Checkbox();tf9.setLabel("Neuen Tab öffnen");tf9.setWidthFull();
                 NumberField tf3 = new NumberField("Sort(Number Only)");tf3.setWidthFull();
-                NumberField tf6 = new NumberField("URL InActive(Number Only)");tf6.setWidthFull();
-                NumberField tf7 = new NumberField();tf7.setLabel("I accept the terms and conditions");tf7.setWidthFull();
-                NumberField tf8 = new NumberField("Auth Level(Number Only)");tf8.setWidthFull();
-                NumberField tf9 = new NumberField("NewTab(Number Only)");tf9.setWidthFull();
+                NumberField tf8 = new NumberField("Authenticator Level");tf8.setWidthFull();
                 HorizontalLayout heading = new HorizontalLayout(H2, minimizeButton, maximizeButton, closeButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
                 HorizontalLayout tools = new HorizontalLayout(H3, createButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
-                VerticalLayout dialogLayout = new VerticalLayout(tf1, tf2, tf3, tf4, tf5, tf6, tf7, tf8, tf9);dialogLayout.setPadding(false);dialogLayout.setSpacing(false);dialogLayout.setWidthFull();
+                HorizontalLayout Checkbox = new HorizontalLayout(tf6, tf7, tf9);
+                VerticalLayout dialogLayout = new VerticalLayout(tf1, tf2,tf5, tf3, tf4, tf8, Checkbox);dialogLayout.setPadding(false);dialogLayout.setSpacing(false);dialogLayout.setWidthFull();
                 Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();
                 Dialog deleteDialog = new Dialog();deleteDialog.setHeaderTitle("Verzeichnis Löschen ?");deleteDialog.add("Dieser Vorgang kann nicht Rückgänig gemacht werden !");deleteDialog.getFooter().add(deleteButton1, cancelButton);deleteDialog.setCloseOnOutsideClick(false);
                 Dialog editDialog = new Dialog();editDialog.setCloseOnOutsideClick(false);editDialog.setHeaderTitle("Verzeichnis bearbeiten");editDialog.setWidth(60, Unit.PERCENTAGE);
@@ -269,11 +270,6 @@ public class MitabeiterView extends Div {
                 Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getSort).setHeader("Sort").setSortable(true).setAutoWidth(true);
                 Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getDescription).setHeader("Description").setSortable(true).setAutoWidth(true);
                 Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getUrl_active).setHeader("Link").setSortable(true).setAutoWidth(true).setKey("Link");
-                Link_grid.addColumn(new ComponentRenderer<>(item ->  {
-                    Anchor anchor = new Anchor();
-                    anchor.setHref(item.getUrl_active());
-                    return anchor;
-                })).setHeader("Link");
                 Link_grid.setItems(list);
                 Link_grid.setVisible(gridDialog.isOpened());
                 Link_grid.addComponentColumn(Tools -> {
@@ -291,7 +287,7 @@ public class MitabeiterView extends Div {
                             tf1.setPlaceholder("Momentan ist nichts Vorhanden");
                         }
                         try {
-                            tf2.setPlaceholder(Tools.getGrp_Linktext());
+                           tf2.setPlaceholder(Tools.getGrp_Linktext());
                         } catch (NullPointerException npe) {
                             tf2.setPlaceholder("Momentan ist nichts Vorhanden");
                         }
@@ -306,14 +302,29 @@ public class MitabeiterView extends Div {
                             tf4.setPlaceholder("Momentan ist nichts Vorhanden");
                         }
                         try {
-                            tf6.setValue(Double.valueOf(Tools.getUrl_inactive()));
+                            tf5.setPlaceholder(Tools.getUrl_active());
                         } catch (NullPointerException npe) {
-                            tf6.setPlaceholder("Momentan ist nichts Vorhanden");
+                            tf5.setPlaceholder("Momentan ist nichts Vorhanden");
                         }
                         try {
-                            tf7.setValue(Double.valueOf(Tools.getActive()));
+                            if (Objects.equals(Tools.getUrl_inactive(), String.valueOf(1))) {
+                                tf6.setValue(true);
+                            }
+                            else {
+                                tf6.setValue(false);
+                            }
                         } catch (NullPointerException npe) {
-                            tf7.setPlaceholder("Momentan ist nichts Vorhanden");
+                            npe.printStackTrace();
+                        }
+                        try {
+                            if (Objects.equals(Tools.getActive(), String.valueOf(1))) {
+                                tf7.setValue(true);
+                            }
+                            else {
+                                tf7.setValue(false);
+                            }
+                        } catch (NullPointerException npe) {
+                            npe.printStackTrace();
                         }
                         try {
                             tf8.setValue(Double.valueOf(Tools.getAuth_level()));
@@ -321,15 +332,47 @@ public class MitabeiterView extends Div {
                             tf8.setPlaceholder("Momentan ist nichts Vorhanden");
                         }
                         try {
-                            tf9.setValue(Double.valueOf(Tools.getNewtab()));
+                            if (Objects.equals(Tools.getNewtab(), String.valueOf(1))) {
+                                tf9.setValue(true);
+                            }
+                            else {
+                                tf9.setValue(false);
+                            }
                         } catch (NullPointerException npe) {
-                            tf9.setPlaceholder("Momentan ist nichts Vorhanden");
+                            npe.printStackTrace();
                         }
 
                         editDialog.add(dialogLayout);editDialog.getFooter().add(sb1, cancelButton);
 
                         sb1.addClickListener(click -> {
-                            dataBaseUtils.editInfoLink(i, tf1.getValue(), tf2.getValue().getId(), tf3.getValue(), tf4.getValue(), tf5.getValue(), tf6.getValue(), tf7.getValue(), tf8.getValue(), tf9.getValue());
+                            if (tf2.isEmpty()) {
+                                Notification.show("Sie haben im Feld 'Link Group' keine Angabe gemacht, bitte korrigieren").addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_ERROR);
+                                return;
+                            }
+                            if (tf5.isEmpty()) {
+                                Notification.show("Sie haben im Feld 'URL Active' keine Angabe gemacht, bitte korrigieren").addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_ERROR);
+                                return;
+                            }
+                            int tf6_info;
+                            if (tf6.getValue().equals(true)) {
+                                tf6_info = 1;
+                            } else {
+                                tf6_info = 0;
+                            }
+                            int tf7_info;
+                            if (tf7.getValue().equals(true)) {
+                               tf7_info = 1;
+                            } else {
+                                tf7_info = 0;
+                            }
+                            int tf9_info;
+                            if (tf9.getValue().equals(true)) {
+                                tf9_info = 1;
+                            } else {
+                                tf9_info = 0;
+                            }
+
+                            dataBaseUtils.editInfoLink(i, tf1.getValue(), tf2.getValue().getId(), tf3.getValue(), tf4.getValue(), tf5.getValue().getLinks(), tf6_info, tf7_info, tf8.getValue(), tf9_info);
                             tf1.setValue("Wird Geändert");
                             gridDialog.close();deleteDialog.close();editDialog.close();
                             Link_grid.getDataProvider().refreshAll();
@@ -366,16 +409,24 @@ public class MitabeiterView extends Div {
                             tf4.setValue("N/A");
                         }
                         if (tf6.isEmpty()) {
-                            tf6.setValue(Double.valueOf("1"));
+                            tf6.setValue(false);
                         }
                         if (tf7.isEmpty()) {
-                            tf7.setValue(Double.valueOf("1"));
+                            tf7.setValue(false);
                         }
                         if (tf8.isEmpty()) {
                             tf8.setValue(Double.valueOf("1"));
                         }
                         if (tf9.isEmpty()) {
-                            tf9.setValue(Double.valueOf("0"));
+                            tf9.setValue(false);
+                        }
+                        if (tf2.isEmpty()) {
+                            Notification.show("Sie haben im Feld 'Link Group' keine Angabe gemacht, bitte korrigieren").addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_ERROR);
+                            return;
+                        }
+                        if (tf5.isEmpty()) {
+                            Notification.show("Sie haben im Feld 'URL Active' keine Angabe gemacht, bitte korrigieren").addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_ERROR);
+                            return;
                         }
                         Integer tf2_Info = tf2.getValue().getId();
                         dataBaseUtils.addNewIdAndName_Link(tf1.getValue(), tf2_Info, tf3.getValue(), tf4.getValue(), tf5.getValue().getLinks(), tf6.getValue(), tf7.getValue(), tf8.getValue(), tf9.getValue());
@@ -387,7 +438,6 @@ public class MitabeiterView extends Div {
                 closeButton.addClickListener(Click -> {
                     gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                 });
-
                 gridDialog.add(heading, tools, Link_grid);
             });
             Ldap_Role_item.addClickListener(e -> {
