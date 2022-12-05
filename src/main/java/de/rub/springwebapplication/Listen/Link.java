@@ -2,6 +2,7 @@ package de.rub.springwebapplication.Listen;
 
 public class Link {
     String Id, Linktext, Grp_Linktext, description, Sort, Description, Url_active, Url_inactive, Active, Auth_level, Newtab;
+    Integer id;
 
 
     public Link(String pId,
@@ -14,7 +15,8 @@ public class Link {
                 String pUrl_inactive,
                 String pActive,
                 String pAuth_level,
-                String pNewtab) {
+                String pNewtab,
+                Integer pid) {
 
         Id = pId;
         Linktext = pLinktext;
@@ -27,6 +29,7 @@ public class Link {
         Active = pActive;
         Auth_level = pAuth_level;
         Newtab = pNewtab;
+        id = pid;
     }
 
     public String getId() {
@@ -63,6 +66,9 @@ public class Link {
     }
     public String getNewtab() {
         return Newtab;
+    }
+    public Integer getid() {
+        return id;
     }
 
 }

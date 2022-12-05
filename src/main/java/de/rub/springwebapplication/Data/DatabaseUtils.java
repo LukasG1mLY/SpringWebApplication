@@ -358,38 +358,6 @@ public class DatabaseUtils extends SQLUtils {
             return "";
         }
     }
-    public List<Link_grp_Id> getInfoLink_Grp_Id() {
-        List<Link_grp_Id> list = new ArrayList<>();
-        ResultSet rs;
-        try {
-            rs = onQuery("SELECT GRP_LINKTEXT,LINK_GRP_DESCRIPTION,ID FROM LINK_GRP ORDER BY GRP_LINKTEXT");
-            while (rs.next()) {
-                list.add(new Link_grp_Id(
-                        rs.getString("GRP_LINKTEXT"),
-                        rs.getString("LINK_GRP_DESCRIPTION"),
-                        rs.getInt("ID")));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-    public List<Links> getLinks() {
-        List<Links> list = new ArrayList<>();
-        ResultSet rs;
-        try {
-            rs = onQuery("SELECT * FROM LINK ORDER BY URL_ACTIVE ");
-            while (rs.next()) {
-                list.add(new Links(
-                        rs.getString("URL_ACTIVE"),
-                        rs.getInt("ID")));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
     public List<Link> getAll() {
         ResultSet rs;
         List<Link> list = new ArrayList<>();
@@ -407,7 +375,8 @@ public class DatabaseUtils extends SQLUtils {
                         rs.getString("URL_INACTIVE"),
                         rs.getString("ACTIVE"),
                         rs.getString("AUTH_LEVEL"),
-                        rs.getString("NEWTAB")));
+                        rs.getString("NEWTAB"),
+                        rs.getInt("ID")));
             }
         }
         catch (Exception e) {
