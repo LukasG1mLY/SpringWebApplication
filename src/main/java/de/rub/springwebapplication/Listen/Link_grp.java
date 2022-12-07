@@ -11,9 +11,7 @@ public class Link_grp {
         Tile_Id = pTile_Id;
         Sort = pSort;
         Description = pDescription;
-
     }
-
     public String getId() {
         return Id;
     }

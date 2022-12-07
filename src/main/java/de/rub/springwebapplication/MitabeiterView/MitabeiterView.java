@@ -22,6 +22,7 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.WebBrowser;
@@ -122,8 +123,7 @@ public class MitabeiterView extends Div {
                     }
                     dataBaseUtils.editInfoStaff(tf1.getValue());
                     dataBaseUtils.editInfoStudent(tf2.getValue());
-                    editDialog.close();
-                    gridDialog.close();
+                    editDialog.close();gridDialog.close();
                     Notification.show("Erfolgreich Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
                 });
                 closeButton.addClickListener(Click -> {
@@ -214,28 +214,27 @@ public class MitabeiterView extends Div {
                         gridDialog.close();deleteDialog.close();createDialog.close();
                         Notification.show("Erfolgreich Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
                     });
-
                 });
                 closeButton.addClickListener(Click -> {
-                    gridDialog.close();
-                    deleteDialog.close();
-                    editDialog.close();
-                    createDialog.close();
+                    gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                 });
 
                 gridDialog.add(heading, tools, Ldap_grid);
             });
             Link_item.addClickListener(e -> {
 
-                Grid<Link> Link_grid = new Grid<>();
-                List<Link> list = dataBaseUtils.getAll();
+                Grid<de.rub.springwebapplication.Listen.Link> Link_grid = new Grid<>();
+                List<de.rub.springwebapplication.Listen.Link> list = dataBaseUtils.getInfo_Link();
+                List<de.rub.springwebapplication.Listen.Link_grp> link_grp_list = dataBaseUtils.getInfo_Link_Grp();
                 Label info = new Label("WARNUNG Dieser Vorgang kann nicht rückgängig gemacht werden");info.getStyle().set("color", "red");
                 H2 H2 = new H2("Verzeichnis-Liste: Link");H2.getStyle().set("margin", "0 auto 0 0");
                 H2 H3 = new H2("");H2.getStyle().set("margin", "0 auto 0 0");
                 Button sb1 = new Button("Speichern");sb1.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
                 Button sb2 = new Button("Speichern");sb2.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+                Button sb3 = new Button("Speichern");sb3.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
                 Button deleteButton1 = new Button("Löschen");deleteButton1.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
                 Button cancelButton = new Button("Nein, Abbrechen");cancelButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+                Button cancelButton1 = new Button("Nein, Abbrechen");cancelButton1.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
                 Button createButton = new Button("Hinzufügen");createButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SUCCESS);
                 Button closeButton = new Button(VaadinIcon.CLOSE.create());closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ERROR);
                 Button maximizeButton = new Button(VaadinIcon.VIEWPORT.create());maximizeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);maximizeButton.addClickListener(Click -> Link_grid.setAllRowsVisible(true));
@@ -247,18 +246,9 @@ public class MitabeiterView extends Div {
                 Button LinkDelete = new Button(VaadinIcon.TRASH.create());LinkDelete.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
                 TextField tf1 = new TextField("Linktext");tf1.setWidthFull();
                 TextField tf4 = new TextField("Description");tf4.setWidthFull();
-
-                TextField LinktextGruppe = new TextField("Linktext Gruppe");LinktextGruppe.setWidthFull();
-                TextField Beschreibung = new TextField("Beschreibung");Beschreibung.setWidthFull();
-                NumberField SymbolId = new NumberField("Symbol Id");SymbolId.setWidthFull();
-                NumberField KachelId = new NumberField("Kachel Id");KachelId.setWidthFull();
-                NumberField Sortieren = new NumberField("Sortieren");Sortieren.setWidthFull();
-
-
-
-                TextField createLinkField = new TextField("Link Group");createLinkField.setWidthFull();
-                ComboBox<Link> tf5 = new ComboBox<>("URL Active");tf5.setItems(list);tf5.setItemLabelGenerator(Link::getUrl_active);tf5.setWidthFull();
-                ComboBox<Link> tf2 = new ComboBox<>("Link Group");tf2.setItems(list);tf2.setItemLabelGenerator(Link::getGrp_Linktext);tf2.setWidthFull();
+                TextField createLinkField = new TextField("Link Group");createLinkField.setWidthFull();createLinkField.setVisible(false);
+                ComboBox<de.rub.springwebapplication.Listen.Link> tf5 = new ComboBox<>("URL Active");tf5.setItems(list);tf5.setItemLabelGenerator(de.rub.springwebapplication.Listen.Link::getUrl_active);tf5.setWidthFull();
+                ComboBox<de.rub.springwebapplication.Listen.Link_grp> tf2 = new ComboBox<>("Link Group");tf2.setItems(link_grp_list);tf2.setItemLabelGenerator(de.rub.springwebapplication.Listen.Link_grp::getGrp_Linktext);tf2.setWidthFull();
                 Checkbox tf6 = new Checkbox();tf6.setLabel("URL Inaktiv");tf6.setWidthFull();
                 Checkbox tf7 = new Checkbox();tf7.setLabel("URL Aktivieren");tf7.setWidthFull();
                 Checkbox tf9 = new Checkbox();tf9.setLabel("Neuen Tab öffnen");tf9.setWidthFull();
@@ -268,30 +258,23 @@ public class MitabeiterView extends Div {
                 HorizontalLayout tools = new HorizontalLayout(H3, createButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
                 HorizontalLayout Checkbox = new HorizontalLayout(tf6, tf7, tf9);
                 HorizontalLayout LinkGroup = new HorizontalLayout(tf2, createLinkGroup,GroupDelete);LinkGroup.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);LinkGroup.setWidthFull();
-                HorizontalLayout Link = new HorizontalLayout(tf5, createLink,LinkDelete);Link.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);Link.setWidthFull();
-
-                VerticalLayout createLinkGroupLayout = new VerticalLayout(LinktextGruppe, Beschreibung, SymbolId, KachelId, Sortieren);createLinkGroupLayout.setPadding(false);createLinkGroupLayout.setSpacing(false);createLinkGroupLayout.setSizeFull();
-                VerticalLayout createLinkLayout = new VerticalLayout(createLinkField);Link.setWidthFull();
-
+                HorizontalLayout Link = new HorizontalLayout(tf5,createLinkField,createLink,LinkDelete);Link.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);Link.setWidthFull();
+                HorizontalLayout createLayoutFooter = new HorizontalLayout(sb3, cancelButton1);
                 VerticalLayout dialogLayout = new VerticalLayout(tf1, LinkGroup,Link, tf3, tf4, tf8, Checkbox);dialogLayout.setPadding(false);dialogLayout.setSpacing(false);dialogLayout.setWidthFull();
                 Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();
                 Dialog deleteDialog = new Dialog();deleteDialog.setHeaderTitle("Verzeichnis Löschen ?");deleteDialog.add("Dieser Vorgang kann nicht Rückgänig gemacht werden !");deleteDialog.getFooter().add(deleteButton1, cancelButton);deleteDialog.setCloseOnOutsideClick(false);
                 Dialog editDialog = new Dialog();editDialog.setCloseOnOutsideClick(false);editDialog.setHeaderTitle("Verzeichnis bearbeiten");editDialog.setWidth(60, Unit.PERCENTAGE);
-                Dialog createDialog = new Dialog();createDialog.setCloseOnOutsideClick(false);createDialog.setHeaderTitle("Verzeichnis erstellen");createDialog.add(dialogLayout);createDialog.getFooter().add(sb2, cancelButton);createDialog.setWidth(60, Unit.PERCENTAGE);
-
-                Dialog createLinkGroupDialog = new Dialog();createLinkGroupDialog.setHeaderTitle("Link Group hinzufügen");createLinkGroupDialog.add(createLinkGroupLayout);createLinkGroupDialog.getFooter().add(sb2, cancelButton);
-                Dialog createLinkDialog = new Dialog();createLinkDialog.setHeaderTitle("Link hinzufügen");createLinkDialog.add(createLinkLayout);createLinkDialog.getFooter().add(sb2, cancelButton);
+                Dialog createDialog = new Dialog();createDialog.setCloseOnOutsideClick(false);createDialog.setHeaderTitle("Verzeichnis erstellen");createDialog.add(dialogLayout);createDialog.getFooter().add(createLayoutFooter);createDialog.setWidth(60, Unit.PERCENTAGE);
 
                 Link_grid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_WRAP_CELL_CONTENT, GridVariant.LUMO_ROW_STRIPES);
                 Link_grid.setAllRowsVisible(false);
                 Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getId).setHeader("ID").setSortable(true).setAutoWidth(true);
                 Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getLinktext).setHeader("Linktext").setSortable(true).setAutoWidth(true);
-                Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getGrp_Linktext).setHeader("Grp Linktext").setSortable(true).setAutoWidth(true);
+                Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getLink_grp_id).setHeader("Grp Linktext").setSortable(true).setAutoWidth(true);
                 Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getSort).setHeader("Sort").setSortable(true).setAutoWidth(true);
                 Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getDescription).setHeader("Description").setSortable(true).setAutoWidth(true);
                 Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getUrl_active).setHeader("Link").setSortable(true).setAutoWidth(true).setKey("Link");
                 Link_grid.setItems(list);
-                Link_grid.setVisible(gridDialog.isOpened());
                 Link_grid.addComponentColumn(Tools -> {
 
                     int i = parseInt(Tools.getId());
@@ -307,7 +290,7 @@ public class MitabeiterView extends Div {
                             tf1.setPlaceholder("Momentan ist nichts Vorhanden");
                         }
                         try {
-                            tf2.setPlaceholder(Tools.getGrp_Linktext());
+                            tf2.setPlaceholder(Tools.getLink_grp_id());
                         } catch (NullPointerException npe) {
                             tf2.setPlaceholder("Momentan ist nichts Vorhanden");
                         }
@@ -393,7 +376,7 @@ public class MitabeiterView extends Div {
                                 tf9_info = 0;
                             }
 
-                            dataBaseUtils.editInfoLink(i, tf1.getValue(), tf2.getValue().getid(), tf3.getValue(), tf4.getValue(), tf5.getValue().getUrl_active(), tf6_info, tf7_info, tf8.getValue(), tf9_info);
+                            dataBaseUtils.editInfoLink(i, tf1.getValue(), Integer.valueOf(tf2.getValue().getId()), tf3.getValue(), tf4.getValue(), tf5.getValue().getUrl_active(), tf6_info, tf7_info, tf8.getValue(), tf9_info);
                             tf1.setValue("Wird Geändert");
                             gridDialog.close();deleteDialog.close();editDialog.close();
                             Link_grid.getDataProvider().refreshAll();
@@ -405,7 +388,7 @@ public class MitabeiterView extends Div {
                         deleteDialog.getFooter().add(cancelButton);
                         deleteButton1.addClickListener(click -> {
                             dataBaseUtils.deleteInfoLink(parseInt(Tools.getId()));
-                            gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
+                            gridDialog.close();deleteDialog.close();editDialog.close();
                             Link_grid.getDataProvider().refreshAll();
 
                             Notification.show("Erfolgreich Verzeichnis "+Tools.getId()+" Gelöscht", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
@@ -415,19 +398,14 @@ public class MitabeiterView extends Div {
                 }).setFlexGrow(0);
 
                 createLinkGroup.addClickListener(Click -> {
-                    createLinkGroupDialog.open();
-                });
 
-                createLink.addClickListener(Click -> {
-                    createLinkDialog.open();
                 });
-
                 cancelButton.addClickListener(Click -> {
-                    gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();createLinkGroupDialog.close();createLinkDialog.close();
+                    gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                 });
                 createButton.addClickListener(Click -> {
                     createDialog.open();
-                    sb2.addClickListener(click -> {
+                    sb3.addClickListener(click -> {
                         if (tf1.isEmpty()) {
                             tf1.setValue("N/A");
                         }
@@ -453,16 +431,29 @@ public class MitabeiterView extends Div {
                             Notification.show("Sie haben im Feld 'Link Group' keine Angabe gemacht, bitte korrigieren").addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_ERROR);
                             return;
                         }
-                        if (tf5.isEmpty()) {
-                            Notification.show("Sie haben im Feld 'URL Active' keine Angabe gemacht, bitte korrigieren").addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_ERROR);
-                            return;
-                        }
+                        if (!tf5.isVisible()) {
 
-                        Integer tf2_Info = tf2.getValue().getid();
-                        dataBaseUtils.addNewIdAndName_Link(tf1.getValue(), tf2_Info, tf3.getValue(), tf4.getValue(), tf5.getValue().getUrl_active(), tf6.getValue(), tf7.getValue(), tf8.getValue(), tf9.getValue());
+
+
+                            dataBaseUtils.addNewIdAndName_Link(tf1.getValue(), String.valueOf(tf2.getValue().getId()), tf3.getValue(), tf4.getValue(), createLinkField.getValue(), tf6.getValue(), tf7.getValue(), tf8.getValue(), tf9.getValue());
+                        } else {
+                            if (tf5.isEmpty()) {
+                                Notification.show("Sie haben im Feld 'URL Active' keine Angabe gemacht, bitte korrigieren").addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_ERROR);
+                                return;
+                            }
+                            dataBaseUtils.addNewIdAndName_Link(tf1.getValue(), String.valueOf(tf2.getValue().getId()), tf3.getValue(), tf4.getValue(), tf5.getValue().getUrl_active(), tf6.getValue(), tf7.getValue(), tf8.getValue(), tf9.getValue());
+                        }
                         Link_grid.getDataProvider().refreshAll();
                         gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                         Notification.show("Erfolgreich Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
+                    });
+                    cancelButton1.addClickListener(click -> {
+                        gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
+                    });
+
+                    createLink.addClickListener(click -> {
+                        tf5.setVisible(false);
+                        createLinkField.setVisible(true);
                     });
                 });
                 closeButton.addClickListener(Click -> {

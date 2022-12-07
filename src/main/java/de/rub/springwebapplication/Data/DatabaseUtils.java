@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class DatabaseUtils extends SQLUtils {
 
@@ -179,7 +180,7 @@ public class DatabaseUtils extends SQLUtils {
 
 
     }
-    public void addNewIdAndName_Link(String Linktext, Integer Link_group_ID, Double Sort, String Description, String Url_Active, Boolean Url_inActive, Boolean Active, Double Auth_Level, Boolean NewTab) {
+    public void addNewIdAndName_Link(String Linktext, String Link_group_ID, Double Sort, String Description, String Url_Active, Boolean Url_inActive, Boolean Active, Double Auth_Level, Boolean NewTab) {
         try {
             ResultSet rs = onQuery("SELECT MAX(ID) FROM LINK ORDER BY ID");
             rs.next();
@@ -358,25 +359,23 @@ public class DatabaseUtils extends SQLUtils {
             return "";
         }
     }
-    public List<Link> getAll() {
+    public List<Link> getInfo_Link() {
         ResultSet rs;
         List<Link> list = new ArrayList<>();
         try {
-            rs = onQuery("SELECT L.*,LG.GRP_LINKTEXT,LG.LINK_GRP_DESCRIPTION,LG.ID FROM LINK L CROSS JOIN LINK_GRP LG WHERE L.LINK_GRP_ID = LG.ID ORDER BY L.ID");
+            rs = onQuery("SELECT L.*,LG.GRP_LINKTEXT,LG.LINK_GRP_DESCRIPTION,LG.ID FROM LINK L INNER JOIN LINK_GRP LG ON L.LINK_GRP_ID = LG.ID ORDER BY L.ID");
             while (rs.next()) {
                 list.add(new Link(
                         rs.getString("ID"),
                         rs.getString("LINKTEXT"),
                         rs.getString("GRP_LINKTEXT"),
-                        rs.getString("LINK_GRP_DESCRIPTION"),
                         rs.getString("SORT"),
                         rs.getString("LINK_DESCRIPTION"),
                         rs.getString("URL_ACTIVE"),
                         rs.getString("URL_INACTIVE"),
                         rs.getString("ACTIVE"),
                         rs.getString("AUTH_LEVEL"),
-                        rs.getString("NEWTAB"),
-                        rs.getInt("ID")));
+                        rs.getString("NEWTAB")));
             }
         }
         catch (Exception e) {
