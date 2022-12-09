@@ -63,7 +63,11 @@
 			<artifactId>vaadin-renderer-flow</artifactId>
 			<version>23.2.7</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+        </dependency>
+    </dependencies>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

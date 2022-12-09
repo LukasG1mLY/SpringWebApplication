@@ -108,7 +108,7 @@ public class DatabaseUtils extends SQLUtils {
     }
     public void editInfoLink_Grp(int id, String pGrp_Linktext, Double pIcon_Id, Double pTile_Id, Double pSort, String pDescription) {
         try {
-            onExecute("UPDATE LINK_GRP SET GRP_LINKTEXT =?, ICON_ID =?, TILE_ID =?, SORT =?, DESCRIPTION =? WHERE ID =?", pGrp_Linktext, pIcon_Id, pTile_Id, pSort, pDescription, id);
+            onExecute("UPDATE LINK_GRP SET GRP_LINKTEXT =?, ICON_ID =?, TILE_ID =?, SORT =?, LINK_GRP_DESCRIPTION =? WHERE ID =?", pGrp_Linktext, pIcon_Id, pTile_Id, pSort, pDescription, id);
             System.out.println("Changed Info Link group:" + id);
         } catch (SQLException e) {
             e.printStackTrace();

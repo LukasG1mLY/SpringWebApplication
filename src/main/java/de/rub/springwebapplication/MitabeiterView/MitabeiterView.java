@@ -1,6 +1,5 @@
 package de.rub.springwebapplication.MitabeiterView;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
@@ -12,7 +11,6 @@ import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
@@ -26,7 +24,6 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.WebBrowser;
@@ -36,19 +33,14 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-
 import static java.lang.Integer.parseInt;
-
-@PageTitle("MitabeiterView")
 @Route("MitabeiterView")
 
 public class MitabeiterView extends Div {
-
     public DatabaseUtils dataBaseUtils;
     private final Tab Startseite_WebClient;
     private final Tab Bearbeiten;
     private final VerticalLayout content;
-
     public MitabeiterView() throws IOException {
 
         final WebBrowser webBrowser = UI.getCurrent().getSession().getBrowser();
@@ -232,7 +224,6 @@ public class MitabeiterView extends Div {
                 MenuItem add = subMenu.addItem("Hinzufügen");
                 MenuItem edit = subMenu.addItem("Bearbeiten");
                 MenuItem delete = subMenu.addItem("Delete");
-
                 Grid<de.rub.springwebapplication.Listen.Link> Link_grid = new Grid<>();
                 List<de.rub.springwebapplication.Listen.Link> list = dataBaseUtils.getInfo_Link();
                 List<de.rub.springwebapplication.Listen.Link_grp> link_grp_list = dataBaseUtils.getInfo_Link_Grp();
@@ -246,8 +237,6 @@ public class MitabeiterView extends Div {
                 Button deleteButton2 = new Button("Löschen");deleteButton2.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);deleteButton2.setVisible(false);
                 Button cancelButton = new Button("Nein, Abbrechen");cancelButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
                 Button cancelButton1 = new Button("Nein, Abbrechen");cancelButton1.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-
                 Button closeButton = new Button(VaadinIcon.CLOSE.create());closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ERROR);
                 Button maximizeButton = new Button(VaadinIcon.VIEWPORT.create());maximizeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);maximizeButton.addClickListener(Click -> Link_grid.setAllRowsVisible(true));
                 Button minimizeButton = new Button(VaadinIcon.RESIZE_H.create());minimizeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);minimizeButton.addClickListener(Click -> Link_grid.setAllRowsVisible(false));
@@ -255,10 +244,6 @@ public class MitabeiterView extends Div {
                 Button createLinkGroup = new Button(VaadinIcon.PLUS.create());createLinkGroup.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
                 Button createLink = new Button(VaadinIcon.PLUS.create());createLink.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
                 Button ReturncreateLink = new Button(VaadinIcon.ARROW_LEFT.create());ReturncreateLink.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);ReturncreateLink.setVisible(false);
-
-                Button GroupDelete = new Button(VaadinIcon.TRASH.create());GroupDelete.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
-                Button LinkDelete = new Button(VaadinIcon.TRASH.create());LinkDelete.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
-
                 TextField tf1 = new TextField("Linktext");tf1.setWidthFull();
                 TextField tf4 = new TextField("Description");tf4.setWidthFull();
                 TextField createLinkField = new TextField("Neuen Link erstellen");createLinkField.setWidthFull();createLinkField.setVisible(false);
@@ -272,14 +257,14 @@ public class MitabeiterView extends Div {
                 HorizontalLayout heading = new HorizontalLayout(H2, minimizeButton, maximizeButton, closeButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
                 HorizontalLayout tools = new HorizontalLayout(H3, Settings);heading.setAlignItems(FlexComponent.Alignment.CENTER);
                 HorizontalLayout Checkbox = new HorizontalLayout(tf6, tf7, tf9);
-                HorizontalLayout LinkGroup = new HorizontalLayout(tf2, createLinkGroup,GroupDelete);LinkGroup.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);LinkGroup.setWidthFull();
-                HorizontalLayout Link = new HorizontalLayout(tf5,createLinkField,ReturncreateLink,createLink,LinkDelete);Link.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);Link.setWidthFull();
+                HorizontalLayout LinkGroup = new HorizontalLayout(tf2, createLinkGroup);LinkGroup.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);LinkGroup.setWidthFull();
+                HorizontalLayout Link = new HorizontalLayout(tf5,createLinkField,ReturncreateLink,createLink);Link.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);Link.setWidthFull();
                 HorizontalLayout createLayoutFooter = new HorizontalLayout(sb3, cancelButton1);
                 VerticalLayout dialogLayout = new VerticalLayout(tf1, LinkGroup,Link, tf3, tf4, tf8, Checkbox);dialogLayout.setPadding(false);dialogLayout.setSpacing(false);dialogLayout.setWidthFull();
-                Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();
-                Dialog deleteDialog = new Dialog();deleteDialog.setHeaderTitle("Verzeichnis Löschen ?");deleteDialog.add("Dieser Vorgang kann nicht Rückgänig gemacht werden !");deleteDialog.getFooter().add(deleteButton1, cancelButton);deleteDialog.setCloseOnOutsideClick(false);
-                Dialog editDialog = new Dialog();editDialog.setCloseOnOutsideClick(false);editDialog.setHeaderTitle("Verzeichnis bearbeiten");editDialog.setWidth(60, Unit.PERCENTAGE);editDialog.add(dialogLayout);editDialog.getFooter().add(createLayoutFooter);
-                Dialog createDialog = new Dialog();createDialog.setCloseOnOutsideClick(false);createDialog.setHeaderTitle("Verzeichnis erstellen");createDialog.add(dialogLayout);createDialog.getFooter().add(createLayoutFooter);createDialog.setWidth(60, Unit.PERCENTAGE);
+                Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();gridDialog.setCloseOnEsc(false);
+                Dialog deleteDialog = new Dialog();deleteDialog.setHeaderTitle("Verzeichnis Löschen ?");deleteDialog.add("Dieser Vorgang kann nicht Rückgänig gemacht werden !");deleteDialog.getFooter().add(deleteButton1, cancelButton);deleteDialog.setCloseOnOutsideClick(false);deleteDialog.setCloseOnEsc(false);
+                Dialog editDialog = new Dialog();editDialog.setCloseOnOutsideClick(false);editDialog.setHeaderTitle("Verzeichnis bearbeiten");editDialog.setWidth(60, Unit.PERCENTAGE);editDialog.add(dialogLayout);editDialog.getFooter().add(createLayoutFooter);editDialog.setCloseOnEsc(false);
+                Dialog createDialog = new Dialog();createDialog.setCloseOnOutsideClick(false);createDialog.setHeaderTitle("Verzeichnis erstellen");createDialog.add(dialogLayout);createDialog.getFooter().add(createLayoutFooter);createDialog.setWidth(60, Unit.PERCENTAGE);createDialog.setCloseOnEsc(false);
 
                 Link_grid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_WRAP_CELL_CONTENT, GridVariant.LUMO_ROW_STRIPES);
                 Link_grid.setAllRowsVisible(false);
@@ -302,6 +287,8 @@ public class MitabeiterView extends Div {
                 });
 
                 add.addClickListener(Click -> {
+                    delete.setEnabled(true);
+                    edit.setEnabled(true);
 
                     Link_grid.removeAllColumns();
                     Link_grid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_WRAP_CELL_CONTENT, GridVariant.LUMO_ROW_STRIPES);
@@ -314,8 +301,6 @@ public class MitabeiterView extends Div {
                     Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getUrl_active).setHeader("Link").setSortable(true).setAutoWidth(true).setKey("Link");
                     Link_grid.setItems(list);
 
-                    delete.setEnabled(true);
-                    edit.setEnabled(true);
                     deleteButton2.setVisible(false);
                     Link_grid.setSelectionMode(Grid.SelectionMode.NONE);
                     createDialog.open();
@@ -380,6 +365,7 @@ public class MitabeiterView extends Div {
                     });
                 });
                 edit.addClickListener(Click -> {
+                    add.setEnabled(true);
                     edit.setEnabled(false);
                     delete.setEnabled(true);
                     deleteButton2.setVisible(false);
@@ -502,6 +488,7 @@ public class MitabeiterView extends Div {
 
                 });
                 delete.addClickListener(Click -> {
+
                     Link_grid.removeAllColumns();
                     delete.setEnabled(false);
                     add.setEnabled(true);
@@ -518,23 +505,22 @@ public class MitabeiterView extends Div {
                     Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getUrl_active).setHeader("Link").setSortable(true).setAutoWidth(true).setKey("Link");
                     Link_grid.addComponentColumn(Tools -> {
 
-                        Checkbox deleteButton = new Checkbox();
+                        Checkbox deleteBox = new Checkbox();
 
-                        deleteButton.addClickListener(click -> {
-                            deleteButton2.addClickListener(klick -> {
+                        deleteBox.addClickListener(click -> deleteButton2.addClickListener(klick -> {
                                 deleteDialog.open();
-                                deleteButton1.addClickListener(event -> {
-                                    if (deleteButton.getValue().equals(true)) {
-                                        int i = Integer.parseInt(Tools.getId());
-                                        dataBaseUtils.deleteInfoLink(i);
-                                    } else {
-                                        return;
-                                    }
-                                    gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
-                                });
+                            deleteButton1.addClickListener(event -> {
+                                if (deleteBox.getValue().equals(true)) {
+                                    int i = Integer.parseInt(Tools.getId());
+                                    dataBaseUtils.deleteInfoLink(i);
+                                    Notification.show("Alle ausgewählten Rows wurden entfernt");
+                                } else {
+                                   return;
+                                }
+                                gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                             });
-                        });
-                        return new HorizontalLayout(deleteButton);
+                        }));
+                        return new HorizontalLayout(deleteBox);
                     }).setFlexGrow(0);
                     Link_grid.setItems(list);
 
@@ -543,7 +529,6 @@ public class MitabeiterView extends Div {
                 gridDialog.add(heading, tools, Link_grid);
                 gridDialog.getFooter().add(deleteButton2);
             });
-
             Ldap_Role_item.addClickListener(e -> {
                 List<de.rub.springwebapplication.Listen.LDAP_ROLE> LdapRole = dataBaseUtils.getAllInfos_LDAP_ROLE();
                 Grid<LDAP_ROLE> LdapRole_grid = new Grid<>();
@@ -649,10 +634,10 @@ public class MitabeiterView extends Div {
                 VerticalLayout dialogLayout = new VerticalLayout(tf1, tf2, tf3, tf4, tf5);dialogLayout.setPadding(false);dialogLayout.setSpacing(false);dialogLayout.setSizeFull();
                 HorizontalLayout heading = new HorizontalLayout(H2, minimizeButton, maximizeButton, closeButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
                 HorizontalLayout tools = new HorizontalLayout(H3, createButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
-                Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();gridDialog.add(heading, tools, LinkGrp_grid);
+                Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();
                 Dialog deleteDialog = new Dialog();deleteDialog.setWidth(60, Unit.PERCENTAGE);
-                Dialog editDialog = new Dialog();editDialog.setWidth(60, Unit.PERCENTAGE);editDialog.add(tf1, tf2, tf3, tf4, tf5);editDialog.getFooter().add(sb2, cancelButton);
-                Dialog createDialog = new Dialog();createDialog.setWidth(60, Unit.PERCENTAGE);createDialog.add(tf1, tf2, tf3, tf4, tf5);createDialog.getFooter().add(sb3, cancelButton);
+                Dialog editDialog = new Dialog();editDialog.setWidth(60, Unit.PERCENTAGE);
+                Dialog createDialog = new Dialog();createDialog.setWidth(60, Unit.PERCENTAGE);
 
                 LinkGrp_grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT, GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_COLUMN_BORDERS);
                 LinkGrp_grid.addColumn(Link_grp::getId).setHeader("ID").setWidth("75px").setFlexGrow(0);
@@ -661,15 +646,15 @@ public class MitabeiterView extends Div {
                 LinkGrp_grid.addColumn(Link_grp::getTile_Id).setHeader("Tile_Id");
                 LinkGrp_grid.addColumn(Link_grp::getSort).setHeader("Sort");
                 LinkGrp_grid.addColumn(Link_grp::getDescription).setHeader("Description");
-
                 LinkGrp_grid.addComponentColumn(Tools -> {
 
                     Button deleteButton = new Button(VaadinIcon.TRASH.create());deleteButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ERROR);
                     Button editButton = new Button(VaadinIcon.EDIT.create());editButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
-
                     editButton.addClickListener(Click -> {
                         editDialog.open();
+                        editDialog.add(dialogLayout);
+                        editDialog.getFooter().add(sb2, cancelButton);
                         tf1.setValue(Tools.getGrp_Linktext());
                         try {
                             tf5.setValue(Tools.getDescription());
@@ -732,7 +717,7 @@ public class MitabeiterView extends Div {
                     createDialog.open();
                     createDialog.add(dialogLayout);
                     createDialog.setCloseOnOutsideClick(false);
-                    createDialog.getFooter().add(sb2, cancelButton);
+                    createDialog.getFooter().add(sb3, cancelButton);
 
                     sb3.addClickListener(click -> {
                         if (tf1.isEmpty()) {
@@ -759,6 +744,8 @@ public class MitabeiterView extends Div {
                 closeButton.addClickListener(Click -> {
                     editDialog.close();deleteDialog.close();createDialog.close();gridDialog.close();
                 });
+
+                gridDialog.add(heading, tools, LinkGrp_grid);
             });
             Link_Tile_item.addClickListener(e -> {
 
