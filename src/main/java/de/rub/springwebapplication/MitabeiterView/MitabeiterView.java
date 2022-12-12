@@ -226,6 +226,7 @@ public class MitabeiterView extends Div {
                 Grid<de.rub.springwebapplication.Listen.Link> Link_grid = new Grid<>();
                 List<de.rub.springwebapplication.Listen.Link> list = dataBaseUtils.getInfo_Link();
                 List<de.rub.springwebapplication.Listen.Link_grp> link_grp_list = dataBaseUtils.getInfo_Link_Grp();
+                List<de.rub.springwebapplication.Listen.Ldap> ldap_grp_list = dataBaseUtils.getInfo_Ldap();
                 Label info = new Label("WARNUNG Dieser Vorgang kann nicht rückgängig gemacht werden");info.getStyle().set("color", "red");
                 H2 H2 = new H2("Verzeichnis-Liste: Link");H2.getStyle().set("margin", "0 auto 0 0");
                 H2 H3 = new H2("");H2.getStyle().set("margin", "0 auto 0 0");
@@ -249,6 +250,7 @@ public class MitabeiterView extends Div {
                 TextField textField4 = new TextField("Description");textField4.setWidthFull();
                 TextField createLinkField = new TextField("Neuen Link erstellen");createLinkField.setWidthFull();createLinkField.setVisible(false);
                 ComboBox<de.rub.springwebapplication.Listen.Link_grp> textField2 = new ComboBox<>("Link Group");textField2.setItems(link_grp_list);textField2.setItemLabelGenerator(de.rub.springwebapplication.Listen.Link_grp::getGrp_Linktext);textField2.setWidthFull();
+                ComboBox<de.rub.springwebapplication.Listen.Ldap> LdapField = new ComboBox<>("Ldap Group");LdapField.setItems(ldap_grp_list);LdapField.setItemLabelGenerator(de.rub.springwebapplication.Listen.Ldap::getContent);LdapField.setWidthFull();
                 ComboBox<de.rub.springwebapplication.Listen.Link> textField5 = new ComboBox<>("Vorhandenen Link auswählen");textField5.setItems(list);textField5.setItemLabelGenerator(de.rub.springwebapplication.Listen.Link::getUrl_active);textField5.setAllowCustomValue(false);textField5.setWidthFull();
                 Checkbox textField6 = new Checkbox();textField6.setLabel("URL Inaktiv");textField6.setWidthFull();
                 Checkbox textField7 = new Checkbox();textField7.setLabel("URL Aktivieren");textField7.setWidthFull();
@@ -259,9 +261,11 @@ public class MitabeiterView extends Div {
                 HorizontalLayout tools = new HorizontalLayout(H3, Settings);heading.setAlignItems(FlexComponent.Alignment.CENTER);
                 HorizontalLayout Checkbox = new HorizontalLayout(textField6, textField7, textField9);
                 HorizontalLayout LinkGroup = new HorizontalLayout(textField2, createLinkGroup);LinkGroup.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);LinkGroup.setWidthFull();
-                HorizontalLayout Link = new HorizontalLayout(textField5,createLinkField,ReturnCreateLink,createLink);Link.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);Link.setWidthFull();
+                HorizontalLayout Link = new HorizontalLayout(textField5, createLinkField, ReturnCreateLink, createLink);Link.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);Link.setWidthFull();
+                HorizontalLayout Ldap_Grp = new HorizontalLayout(LdapField);Ldap_Grp.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);Ldap_Grp.setWidthFull();
                 HorizontalLayout createLayoutFooter = new HorizontalLayout(saveButton3, cancelButton1);
-                VerticalLayout dialogLayout = new VerticalLayout(textField1, LinkGroup,Link, textField3, textField4, textField8, Checkbox);dialogLayout.setPadding(false);dialogLayout.setSpacing(false);dialogLayout.setWidthFull();
+                VerticalLayout dialogLayout = new VerticalLayout(textField1, LinkGroup, Ldap_Grp, Link, textField3, textField4, textField8, Checkbox);dialogLayout.setPadding(false);dialogLayout.setSpacing(false);dialogLayout.setWidthFull();
+
                 Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();gridDialog.setCloseOnEsc(false);
                 Dialog deleteDialog = new Dialog();deleteDialog.setHeaderTitle("Verzeichnis Löschen ?");deleteDialog.add("Dieser Vorgang kann nicht Rückgänig gemacht werden !");deleteDialog.getFooter().add(deleteButton1, cancelButton);deleteDialog.setCloseOnOutsideClick(false);deleteDialog.setCloseOnEsc(false);
                 Dialog editDialog = new Dialog();editDialog.setCloseOnOutsideClick(false);editDialog.setHeaderTitle("Verzeichnis bearbeiten");editDialog.setWidth(60, Unit.PERCENTAGE);editDialog.add(dialogLayout);editDialog.getFooter().add(createLayoutFooter);editDialog.setCloseOnEsc(false);
@@ -269,8 +273,8 @@ public class MitabeiterView extends Div {
 
                 TextField tf1 = new TextField("Linktext Gruppe");tf1.setWidthFull();
                 TextField tf5 = new TextField("Beschreibung");tf5.setWidthFull();
-                NumberField tf2 = new NumberField("Symbol Id");tf2.setWidthFull();
-                NumberField tf3 = new NumberField("Kachel Id");tf3.setWidthFull();
+                NumberField tf2 = new NumberField("Symbol");tf2.setWidthFull();
+                NumberField tf3 = new NumberField("Kachel");tf3.setWidthFull();
                 NumberField tf4 = new NumberField("Sortieren");tf4.setWidthFull();
 
                 VerticalLayout createLinkGroupDialogLayout = new VerticalLayout(tf1, tf2, tf3, tf4, tf5);createLinkGroupDialogLayout.setPadding(false);createLinkGroupDialogLayout.setSpacing(false);createLinkGroupDialogLayout.setWidthFull();
@@ -532,6 +536,7 @@ public class MitabeiterView extends Div {
                         Link_grid.getDataProvider().refreshAll();
                         gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                         Notification.show("Erfolgreich Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
+                        gridDialog.open();
                 }
                 });
                 saveButton4.addClickListener(click -> {

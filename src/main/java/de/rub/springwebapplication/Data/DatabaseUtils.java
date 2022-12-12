@@ -383,4 +383,20 @@ public class DatabaseUtils extends SQLUtils {
         }
         return list;
     }
+
+    public List<Ldap> getInfo_Link_to_Ldap_Grp() {
+        ResultSet rs;
+        List<Ldap> list = new ArrayList<>();
+        try {
+            rs = onQuery("SELECT * FROM LINK_TO_LDAP_GRP ORDER BY ID");
+            while (rs.next()) {
+                list.add(new Ldap(rs.getString("ID"),
+                        rs.getString("GRP_NAME")));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }
