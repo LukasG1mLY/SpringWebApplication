@@ -24,7 +24,6 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.WebBrowser;
 import de.rub.springwebapplication.Data.DatabaseUtils;
@@ -230,41 +229,53 @@ public class MitabeiterView extends Div {
                 Label info = new Label("WARNUNG Dieser Vorgang kann nicht rückgängig gemacht werden");info.getStyle().set("color", "red");
                 H2 H2 = new H2("Verzeichnis-Liste: Link");H2.getStyle().set("margin", "0 auto 0 0");
                 H2 H3 = new H2("");H2.getStyle().set("margin", "0 auto 0 0");
-                Button sb1 = new Button("Speichern");sb1.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
-                Button sb2 = new Button("Speichern");sb2.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
-                Button sb3 = new Button("Speichern");sb3.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+                Button saveButton1 = new Button("Speichern");saveButton1.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+                Button saveButton2 = new Button("Speichern");saveButton2.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+                Button saveButton3 = new Button("Speichern");saveButton3.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+                Button saveButton4 = new Button("Speichern");saveButton3.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
                 Button deleteButton1 = new Button("Löschen");deleteButton1.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
                 Button deleteButton2 = new Button("Löschen");deleteButton2.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);deleteButton2.setVisible(false);
                 Button cancelButton = new Button("Nein, Abbrechen");cancelButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
                 Button cancelButton1 = new Button("Nein, Abbrechen");cancelButton1.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+                Button cancelButton2 = new Button("Nein, Abbrechen");cancelButton2.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
                 Button closeButton = new Button(VaadinIcon.CLOSE.create());closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ERROR);
                 Button maximizeButton = new Button(VaadinIcon.VIEWPORT.create());maximizeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);maximizeButton.addClickListener(Click -> Link_grid.setAllRowsVisible(true));
                 Button minimizeButton = new Button(VaadinIcon.RESIZE_H.create());minimizeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);minimizeButton.addClickListener(Click -> Link_grid.setAllRowsVisible(false));
                 Button addLinkGroup = new Button("Link Group Hinzufügen");addLinkGroup.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_SUCCESS);addLinkGroup.setWidthFull();
                 Button createLinkGroup = new Button(VaadinIcon.PLUS.create());createLinkGroup.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
                 Button createLink = new Button(VaadinIcon.PLUS.create());createLink.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
-                Button ReturncreateLink = new Button(VaadinIcon.ARROW_LEFT.create());ReturncreateLink.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);ReturncreateLink.setVisible(false);
-                TextField tf1 = new TextField("Linktext");tf1.setWidthFull();
-                TextField tf4 = new TextField("Description");tf4.setWidthFull();
+                Button ReturnCreateLink = new Button(VaadinIcon.ARROW_LEFT.create());ReturnCreateLink.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);ReturnCreateLink.setVisible(false);
+                TextField textField1 = new TextField("Linktext");textField1.setWidthFull();
+                TextField textField4 = new TextField("Description");textField4.setWidthFull();
                 TextField createLinkField = new TextField("Neuen Link erstellen");createLinkField.setWidthFull();createLinkField.setVisible(false);
-                ComboBox<de.rub.springwebapplication.Listen.Link_grp> tf2 = new ComboBox<>("Link Group");tf2.setItems(link_grp_list);tf2.setItemLabelGenerator(de.rub.springwebapplication.Listen.Link_grp::getGrp_Linktext);tf2.setWidthFull();
-                ComboBox<de.rub.springwebapplication.Listen.Link> tf5 = new ComboBox<>("Vorhandenen Link auswählen");tf5.setItems(list);tf5.setItemLabelGenerator(de.rub.springwebapplication.Listen.Link::getUrl_active);tf5.setAllowCustomValue(false);tf5.setWidthFull();
-                Checkbox tf6 = new Checkbox();tf6.setLabel("URL Inaktiv");tf6.setWidthFull();
-                Checkbox tf7 = new Checkbox();tf7.setLabel("URL Aktivieren");tf7.setWidthFull();
-                Checkbox tf9 = new Checkbox();tf9.setLabel("Neuen Tab öffnen");tf9.setWidthFull();
-                NumberField tf3 = new NumberField("Sort(Number Only)");tf3.setWidthFull();
-                NumberField tf8 = new NumberField("Authenticator Level");tf8.setWidthFull();
+                ComboBox<de.rub.springwebapplication.Listen.Link_grp> textField2 = new ComboBox<>("Link Group");textField2.setItems(link_grp_list);textField2.setItemLabelGenerator(de.rub.springwebapplication.Listen.Link_grp::getGrp_Linktext);textField2.setWidthFull();
+                ComboBox<de.rub.springwebapplication.Listen.Link> textField5 = new ComboBox<>("Vorhandenen Link auswählen");textField5.setItems(list);textField5.setItemLabelGenerator(de.rub.springwebapplication.Listen.Link::getUrl_active);textField5.setAllowCustomValue(false);textField5.setWidthFull();
+                Checkbox textField6 = new Checkbox();textField6.setLabel("URL Inaktiv");textField6.setWidthFull();
+                Checkbox textField7 = new Checkbox();textField7.setLabel("URL Aktivieren");textField7.setWidthFull();
+                Checkbox textField9 = new Checkbox();textField9.setLabel("Neuen Tab öffnen");textField9.setWidthFull();
+                NumberField textField3 = new NumberField("Sort(Number Only)");textField3.setWidthFull();
+                NumberField textField8 = new NumberField("Authenticator Level");textField8.setWidthFull();
                 HorizontalLayout heading = new HorizontalLayout(H2, minimizeButton, maximizeButton, closeButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
                 HorizontalLayout tools = new HorizontalLayout(H3, Settings);heading.setAlignItems(FlexComponent.Alignment.CENTER);
-                HorizontalLayout Checkbox = new HorizontalLayout(tf6, tf7, tf9);
-                HorizontalLayout LinkGroup = new HorizontalLayout(tf2, createLinkGroup);LinkGroup.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);LinkGroup.setWidthFull();
-                HorizontalLayout Link = new HorizontalLayout(tf5,createLinkField,ReturncreateLink,createLink);Link.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);Link.setWidthFull();
-                HorizontalLayout createLayoutFooter = new HorizontalLayout(sb3, cancelButton1);
-                VerticalLayout dialogLayout = new VerticalLayout(tf1, LinkGroup,Link, tf3, tf4, tf8, Checkbox);dialogLayout.setPadding(false);dialogLayout.setSpacing(false);dialogLayout.setWidthFull();
+                HorizontalLayout Checkbox = new HorizontalLayout(textField6, textField7, textField9);
+                HorizontalLayout LinkGroup = new HorizontalLayout(textField2, createLinkGroup);LinkGroup.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);LinkGroup.setWidthFull();
+                HorizontalLayout Link = new HorizontalLayout(textField5,createLinkField,ReturnCreateLink,createLink);Link.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);Link.setWidthFull();
+                HorizontalLayout createLayoutFooter = new HorizontalLayout(saveButton3, cancelButton1);
+                VerticalLayout dialogLayout = new VerticalLayout(textField1, LinkGroup,Link, textField3, textField4, textField8, Checkbox);dialogLayout.setPadding(false);dialogLayout.setSpacing(false);dialogLayout.setWidthFull();
                 Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();gridDialog.setCloseOnEsc(false);
                 Dialog deleteDialog = new Dialog();deleteDialog.setHeaderTitle("Verzeichnis Löschen ?");deleteDialog.add("Dieser Vorgang kann nicht Rückgänig gemacht werden !");deleteDialog.getFooter().add(deleteButton1, cancelButton);deleteDialog.setCloseOnOutsideClick(false);deleteDialog.setCloseOnEsc(false);
                 Dialog editDialog = new Dialog();editDialog.setCloseOnOutsideClick(false);editDialog.setHeaderTitle("Verzeichnis bearbeiten");editDialog.setWidth(60, Unit.PERCENTAGE);editDialog.add(dialogLayout);editDialog.getFooter().add(createLayoutFooter);editDialog.setCloseOnEsc(false);
                 Dialog createDialog = new Dialog();createDialog.setCloseOnOutsideClick(false);createDialog.setHeaderTitle("Verzeichnis erstellen");createDialog.add(dialogLayout);createDialog.getFooter().add(createLayoutFooter);createDialog.setWidth(60, Unit.PERCENTAGE);createDialog.setCloseOnEsc(false);
+
+                TextField tf1 = new TextField("Linktext Gruppe");tf1.setWidthFull();
+                TextField tf5 = new TextField("Beschreibung");tf5.setWidthFull();
+                NumberField tf2 = new NumberField("Symbol Id");tf2.setWidthFull();
+                NumberField tf3 = new NumberField("Kachel Id");tf3.setWidthFull();
+                NumberField tf4 = new NumberField("Sortieren");tf4.setWidthFull();
+
+                VerticalLayout createLinkGroupDialogLayout = new VerticalLayout(tf1, tf2, tf3, tf4, tf5);createLinkGroupDialogLayout.setPadding(false);createLinkGroupDialogLayout.setSpacing(false);createLinkGroupDialogLayout.setWidthFull();
+
+                Dialog createLinkGroupDialog = new Dialog();createLinkGroupDialog.setWidth(60, Unit.PERCENTAGE);createLinkGroupDialog.add(createLinkGroupDialogLayout);createLinkGroupDialog.setCloseOnOutsideClick(false);createLinkGroupDialog.getFooter().add(saveButton4, cancelButton2);
 
                 Link_grid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS, GridVariant.LUMO_WRAP_CELL_CONTENT, GridVariant.LUMO_ROW_STRIPES);
                 Link_grid.setAllRowsVisible(false);
@@ -276,9 +287,6 @@ public class MitabeiterView extends Div {
                 Link_grid.addColumn(de.rub.springwebapplication.Listen.Link::getUrl_active).setHeader("Link").setSortable(true).setAutoWidth(true).setKey("Link");
                 Link_grid.setItems(list);
 
-                createLinkGroup.addClickListener(Click -> {
-
-                });
                 cancelButton.addClickListener(Click -> {
                     gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                 });
@@ -286,7 +294,27 @@ public class MitabeiterView extends Div {
                     gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                 });
 
+                createLinkGroup.addClickListener(click -> {
+                    createLinkGroupDialog.open();
+                    createDialog.close();
+                });
+                createLink.addClickListener(click -> {
+                    textField5.setVisible(false);
+                    createLinkField.setValue("");
+                    createLinkField.setPlaceholder("Bitte geben sie einen Link ein");
+                    createLink.setVisible(false);
+                    createLinkField.setVisible(true);
+                    ReturnCreateLink.setVisible(true);
+                });
+                ReturnCreateLink.addClickListener(click -> {
+                    textField5.setVisible(true);
+                    createLinkField.setVisible(false);
+                    ReturnCreateLink.setVisible(false);
+                    createLink.setVisible(true);
+                });
+
                 add.addClickListener(Click -> {
+                    gridDialog.close();
                     delete.setEnabled(true);
                     edit.setEnabled(true);
 
@@ -304,65 +332,7 @@ public class MitabeiterView extends Div {
                     deleteButton2.setVisible(false);
                     Link_grid.setSelectionMode(Grid.SelectionMode.NONE);
                     createDialog.open();
-                    sb3.addClickListener(click -> {
-                        if (tf1.isEmpty()) {
-                            tf1.setValue("N/A");
-                        }
-                        if (tf3.isEmpty()) {
-                            tf3.setValue(Double.valueOf("1"));
-                        }
-                        if (tf4.isEmpty()) {
-                            tf4.setValue("N/A");
-                        }
-                        if (tf6.isEmpty()) {
-                            tf6.setValue(false);
-                        }
-                        if (tf7.isEmpty()) {
-                            tf7.setValue(false);
-                        }
-                        if (tf8.isEmpty()) {
-                            tf8.setValue(Double.valueOf("1"));
-                        }
-                        if (tf9.isEmpty()) {
-                            tf9.setValue(false);
-                        }
-                        if (tf2.isEmpty()) {
-                            Notification.show("Sie haben im Feld 'Link Group' keine Angabe gemacht, bitte korrigieren").addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_ERROR);
-                            return;
-                        }
-                        if (!tf5.isVisible()) {
 
-                            dataBaseUtils.addNewIdAndName_Link(tf1.getValue(), String.valueOf(tf2.getValue().getId()), tf3.getValue(), tf4.getValue(), createLinkField.getValue(), tf6.getValue(), tf7.getValue(), tf8.getValue(), tf9.getValue());
-                        } else {
-                            if (tf5.isEmpty()) {
-                                Notification.show("Sie haben im Feld 'URL Active' keine Angabe gemacht, bitte korrigieren").addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_ERROR);
-                                return;
-                            }
-                            dataBaseUtils.addNewIdAndName_Link(tf1.getValue(), String.valueOf(tf2.getValue().getId()), tf3.getValue(), tf4.getValue(), tf5.getValue().getUrl_active(), tf6.getValue(), tf7.getValue(), tf8.getValue(), tf9.getValue());
-                        }
-                        Link_grid.getDataProvider().refreshAll();
-                        gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
-                        Notification.show("Erfolgreich Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
-                    });
-                    cancelButton1.addClickListener(click -> {
-                        gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
-                    });
-                    createLinkGroup.addClickListener(click -> {});
-                    createLink.addClickListener(click -> {
-                            tf5.setVisible(false);
-                            createLinkField.setValue("");
-                            createLinkField.setPlaceholder("Bitte geben sie einen Link ein");
-                            createLink.setVisible(false);
-                            createLinkField.setVisible(true);
-                            ReturncreateLink.setVisible(true);
-                    });
-                    ReturncreateLink.addClickListener(click -> {
-                        tf5.setVisible(true);
-                        createLinkField.setVisible(false);
-                        ReturncreateLink.setVisible(false);
-                        createLink.setVisible(true);
-
-                    });
                 });
                 edit.addClickListener(Click -> {
                     add.setEnabled(true);
@@ -384,99 +354,99 @@ public class MitabeiterView extends Div {
                         editButton.addClickListener(click -> {
                             editDialog.open();
                             try {
-                                tf1.setValue(Tools.getLinktext());
+                                textField1.setValue(Tools.getLinktext());
                             } catch (NullPointerException npe) {
-                                tf1.setPlaceholder("Momentan ist nichts Vorhanden");
+                                textField1.setPlaceholder("Momentan ist nichts Vorhanden");
                             }
                             try {
-                                tf2.setPlaceholder(Tools.getLink_grp_id());
+                                textField2.setPlaceholder(Tools.getLink_grp_id());
                             } catch (NullPointerException npe) {
-                                tf2.setPlaceholder("Momentan ist nichts Vorhanden");
+                                textField2.setPlaceholder("Momentan ist nichts Vorhanden");
                             }
                             try {
-                                tf3.setValue(Double.valueOf(Tools.getSort()));
+                                textField3.setValue(Double.valueOf(Tools.getSort()));
                             } catch (NullPointerException npe) {
-                                tf3.setPlaceholder("Momentan ist nichts Vorhanden");
+                                textField3.setPlaceholder("Momentan ist nichts Vorhanden");
                             }
                             try {
-                                tf4.setValue((Tools.getDescription()));
+                                textField4.setValue((Tools.getDescription()));
                             } catch (NullPointerException npe) {
-                                tf4.setPlaceholder("Momentan ist nichts Vorhanden");
+                                textField4.setPlaceholder("Momentan ist nichts Vorhanden");
                             }
                             try {
-                                tf5.setPlaceholder(Tools.getUrl_active());
+                                textField5.setPlaceholder(Tools.getUrl_active());
                             } catch (NullPointerException npe) {
-                                tf5.setPlaceholder("Momentan ist nichts Vorhanden");
+                                textField5.setPlaceholder("Momentan ist nichts Vorhanden");
                             }
                             try {
                                 if (Objects.equals(Tools.getUrl_inactive(), String.valueOf(1))) {
-                                    tf6.setValue(true);
+                                    textField6.setValue(true);
                                 }
                                 else {
-                                    tf6.setValue(false);
+                                    textField6.setValue(false);
                                 }
                             } catch (NullPointerException npe) {
                                 npe.printStackTrace();
                             }
                             try {
                                 if (Objects.equals(Tools.getActive(), String.valueOf(1))) {
-                                    tf7.setValue(true);
+                                    textField7.setValue(true);
                                 }
                                 else {
-                                    tf7.setValue(false);
+                                    textField7.setValue(false);
                                 }
                             } catch (NullPointerException npe) {
                                 npe.printStackTrace();
                             }
                             try {
-                                tf8.setValue(Double.valueOf(Tools.getAuth_level()));
+                                textField8.setValue(Double.valueOf(Tools.getAuth_level()));
                             } catch (NullPointerException npe) {
-                                tf8.setPlaceholder("Momentan ist nichts Vorhanden");
+                                textField8.setPlaceholder("Momentan ist nichts Vorhanden");
                             }
                             try {
                                 if (Objects.equals(Tools.getNewtab(), String.valueOf(1))) {
-                                    tf9.setValue(true);
+                                    textField9.setValue(true);
                                 }
                                 else {
-                                    tf9.setValue(false);
+                                    textField9.setValue(false);
                                 }
                             } catch (NullPointerException npe) {
                                 npe.printStackTrace();
                             }
 
-                            editDialog.add(dialogLayout);editDialog.getFooter().add(sb1, cancelButton);
+                            editDialog.add(dialogLayout);editDialog.getFooter().add(saveButton1, cancelButton);
 
-                            sb1.addClickListener(klick -> {
+                            saveButton1.addClickListener(klick -> {
                                 int tf6_info;
                                 int tf7_info;
                                 int tf9_info;
 
-                                if (tf2.isEmpty()) {
+                                if (textField2.isEmpty()) {
                                     Notification.show("Link Unvollständig").addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_ERROR);
                                     return;
                                 }
-                                if (tf5.isEmpty()) {
+                                if (textField5.isEmpty()) {
                                     Notification.show("Link Unvollständig").addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_ERROR);
                                     return;
                                 }
-                                if (tf6.getValue().equals(true)) {
+                                if (textField6.getValue().equals(true)) {
                                     tf6_info = 1;
                                 } else {
                                     tf6_info = 0;
                                 }
-                                if (tf7.getValue().equals(true)) {
+                                if (textField7.getValue().equals(true)) {
                                     tf7_info = 1;
                                 } else {
                                     tf7_info = 0;
                                 }
-                                if (tf9.getValue().equals(true)) {
+                                if (textField9.getValue().equals(true)) {
                                     tf9_info = 1;
                                 } else {
                                     tf9_info = 0;
                                 }
 
-                                dataBaseUtils.editInfoLink(i, tf1.getValue(), Integer.valueOf(tf2.getValue().getId()), tf3.getValue(), tf4.getValue(), tf5.getValue().getUrl_active(), tf6_info, tf7_info, tf8.getValue(), tf9_info);
-                                tf1.setValue("Wird Geändert");
+                                dataBaseUtils.editInfoLink(i, textField1.getValue(), Integer.valueOf(textField2.getValue().getId()), textField3.getValue(), textField4.getValue(), textField5.getValue().getUrl_active(), tf6_info, tf7_info, textField8.getValue(), tf9_info);
+                                textField1.setValue("Wird Geändert");
                                 gridDialog.close();deleteDialog.close();editDialog.close();
                                 Link_grid.getDataProvider().refreshAll();
                                 Notification.show("Erfolgreich Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
@@ -485,7 +455,6 @@ public class MitabeiterView extends Div {
                         return new HorizontalLayout(editButton);
                     }).setFlexGrow(0);
                     Link_grid.setItems(list);
-
                 });
                 delete.addClickListener(Click -> {
 
@@ -514,20 +483,89 @@ public class MitabeiterView extends Div {
                                     int i = Integer.parseInt(Tools.getId());
                                     dataBaseUtils.deleteInfoLink(i);
                                     Notification.show("Alle ausgewählten Rows wurden entfernt");
-                                } else {
-                                   return;
+                                    gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                                 }
-                                gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
                             });
                         }));
                         return new HorizontalLayout(deleteBox);
                     }).setFlexGrow(0);
                     Link_grid.setItems(list);
+                });
 
+                saveButton3.addClickListener(click -> {
+                    if (createDialog.isOpened()) {
+                        if (textField1.isEmpty()) {
+                            textField1.setValue("N/A");
+                        }
+                        if (textField3.isEmpty()) {
+                            textField3.setValue(Double.valueOf("1"));
+                        }
+                        if (textField4.isEmpty()) {
+                            textField4.setValue("N/A");
+                        }
+                        if (textField6.isEmpty()) {
+                            textField6.setValue(false);
+                        }
+                        if (textField7.isEmpty()) {
+                            textField7.setValue(false);
+                        }
+                        if (textField8.isEmpty()) {
+                            textField8.setValue(Double.valueOf("1"));
+                        }
+                        if (textField9.isEmpty()) {
+                            textField9.setValue(false);
+                        }
+                        if (textField2.isEmpty()) {
+                            Notification.show("Sie haben im Feld 'Link Group' keine Angabe gemacht, bitte korrigieren").addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_ERROR);
+                            return;
+                        }
+                        if (!textField5.isVisible()) {
+
+                            dataBaseUtils.addNewIdAndName_Link(textField1.getValue(), String.valueOf(textField2.getValue().getId()), textField3.getValue(), textField4.getValue(), createLinkField.getValue(), textField6.getValue(), textField7.getValue(), textField8.getValue(), textField9.getValue());
+                        } else {
+                            if (textField5.isEmpty()) {
+                                Notification.show("Sie haben im Feld 'URL Active' keine Angabe gemacht, bitte korrigieren").addThemeVariants(NotificationVariant.LUMO_PRIMARY, NotificationVariant.LUMO_ERROR);
+                                return;
+                            }
+                            dataBaseUtils.addNewIdAndName_Link(textField1.getValue(), String.valueOf(textField2.getValue().getId()), textField3.getValue(), textField4.getValue(), textField5.getValue().getUrl_active(), textField6.getValue(), textField7.getValue(), textField8.getValue(), textField9.getValue());
+                        }
+                        Link_grid.getDataProvider().refreshAll();
+                        gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
+                        Notification.show("Erfolgreich Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
+                }
+                });
+                saveButton4.addClickListener(click -> {
+                    if (tf1.isEmpty()) {
+                        tf1.setValue("N/A");
+                    }
+                    if (tf2.isEmpty()) {
+                        tf2.setValue(Double.valueOf("1"));
+                    }
+                    if (tf3.isEmpty()) {
+                        tf3.setValue(Double.valueOf("1"));
+                    }
+                    if (tf4.isEmpty()) {
+                        tf4.setValue(Double.valueOf("1"));
+                    }
+                    if (tf5.isEmpty()) {
+                        tf5.setValue("N/A");
+                    }
+                    dataBaseUtils.addNewIdAndName_Link_Grp(tf1.getValue(), tf2.getValue(), tf3.getValue(), tf4.getValue(), tf5.getValue());
+                    gridDialog.close();createLinkGroupDialog.close();deleteDialog.close();editDialog.close();createDialog.open();
+                    Notification.show("Erfolgreich Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
+                    textField2.getDataProvider().refreshAll();
+                });
+
+                cancelButton1.addClickListener(click -> {
+                    gridDialog.open();deleteDialog.close();editDialog.close();createDialog.close();
+                });
+                cancelButton2.addClickListener(click -> {
+                    gridDialog.close();createLinkGroupDialog.close();deleteDialog.close();editDialog.close();createDialog.open();
                 });
 
                 gridDialog.add(heading, tools, Link_grid);
                 gridDialog.getFooter().add(deleteButton2);
+
             });
             Ldap_Role_item.addClickListener(e -> {
                 List<de.rub.springwebapplication.Listen.LDAP_ROLE> LdapRole = dataBaseUtils.getAllInfos_LDAP_ROLE();

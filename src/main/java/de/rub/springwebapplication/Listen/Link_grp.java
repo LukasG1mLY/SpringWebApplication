@@ -19,7 +19,7 @@ public class Link_grp {
         Id = id;
     }
     public String getGrp_Linktext() {
-        return Grp_Linktext;
+     return Grp_Linktext;
     }
     public String getIcon_Id() {
         return Icon_Id;
