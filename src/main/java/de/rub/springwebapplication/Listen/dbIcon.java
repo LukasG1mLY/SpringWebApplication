@@ -19,4 +19,7 @@ public class dbIcon {
         return ContentType;
     }
 
+    public byte[] getData() {
+        return new byte[0];
+    }
 }

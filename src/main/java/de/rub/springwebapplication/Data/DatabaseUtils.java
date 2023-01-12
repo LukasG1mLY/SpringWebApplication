@@ -3,13 +3,14 @@ package de.rub.springwebapplication.Data;
 import de.rub.springwebapplication.Listen.*;
 import org.ini4j.Wini;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class DatabaseUtils extends SQLUtils {
 
@@ -138,6 +139,7 @@ public class DatabaseUtils extends SQLUtils {
     }
     public void deleteInfoLink(int id)  {
         try {
+            onExecute("DELETE FROM LINK_TO_LDAP_GRP WHERE LINK_ID =?", id);
             onExecute("DELETE FROM LINK WHERE ID =?", id);
             System.out.println("Deleted ROW_" + (id));
 
@@ -180,7 +182,22 @@ public class DatabaseUtils extends SQLUtils {
 
 
     }
-    public void addNewIdAndName_Link(String Linktext, String Link_group_ID, Double Sort, String Description, String Url_Active, Boolean Url_inActive, Boolean Active, Double Auth_Level, Boolean NewTab) {
+    public void addNewIdAndName_Link(Integer LdapId, String Linktext, String Link_group_ID, Double Sort, String Description, String Url_Active, Boolean Url_inActive, Boolean Active, Double Auth_Level, Boolean NewTab) {
+        try {
+            ResultSet rs = onQuery("SELECT MAX(ID) FROM LINK ORDER BY ID");
+            rs.next();
+            int newId = rs.getInt("MAX(ID)") + 1;
+            onExecute("INSERT INTO LINK VALUES(?,?,?,?,?,?,?,?,?,?)", newId, Linktext, Link_group_ID, Sort, Description, Url_Active, Url_inActive, Active, Auth_Level, NewTab);
+            onQuery("SELECT LD.ID,LG.LDAP_GRP_ID FROM LDAP_GRP LD INNER JOIN LINK_TO_LDAP_GRP LG ON LD.ID = LG.LDAP_GRP_ID");
+            onExecute("INSERT INTO LINK_TO_LDAP_GRP VALUES(?,?)", newId, LdapId);
+
+            System.out.println("Die ID: " + newId + " wurde zum verzeichnis Hinzugefügt.");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void addNewIdAndName_Link_without(String Linktext, String Link_group_ID, Double Sort, String Description, String Url_Active, Boolean Url_inActive, Boolean Active, Double Auth_Level, Boolean NewTab) {
         try {
             ResultSet rs = onQuery("SELECT MAX(ID) FROM LINK ORDER BY ID");
             rs.next();
@@ -329,11 +346,27 @@ public class DatabaseUtils extends SQLUtils {
         }
         return list;
     }
+    public List<Tile_Column> getInfo_Tile_Column() {
+        ResultSet rs;
+        List<Tile_Column> list = new ArrayList<>();
+        try {
+            rs = onQuery("SELECT * FROM TILE_COLUMN ORDER BY ID");
+            while (rs.next()) {
+                list.add(new Tile_Column(
+                        rs.getString("TILE_NAME"),
+                        rs.getString("ID")));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
     public List<dbIcon> getIconImage() {
         ResultSet rs;
         List<dbIcon> list = new ArrayList<>();
         try {
-            rs = onQuery("SELECT ID,CONTENTTYPE FROM ICON ORDER BY ID");
+            rs = onQuery("SELECT * FROM ICON ORDER BY ID");
             while (rs.next()) {
                 list.add(new dbIcon(
                         rs.getString("ID"),
@@ -343,21 +376,6 @@ public class DatabaseUtils extends SQLUtils {
             e.printStackTrace();
         }
         return list;
-    }
-    public String getLinkImage(int i) {
-
-        ResultSet rs;
-
-        try {
-            rs = onQuery("SELECT URL FROM ICON WHERE ID =?", i);
-            rs.next();
-            return rs.getString("URL");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Failed onQuery");
-            return "";
-        }
     }
     public List<Link> getInfo_Link() {
         ResultSet rs;
@@ -383,7 +401,6 @@ public class DatabaseUtils extends SQLUtils {
         }
         return list;
     }
-
     public List<Ldap> getInfo_Link_to_Ldap_Grp() {
         ResultSet rs;
         List<Ldap> list = new ArrayList<>();
@@ -399,4 +416,32 @@ public class DatabaseUtils extends SQLUtils {
         }
         return list;
     }
+    public Ldap addNewIdAndName_Link1(String LdapId) {
+        try {
+            ResultSet rs = onQuery("SELECT LD.ID,LG.LDAP_GRP_ID FROM LDAP_GRP LD INNER JOIN LINK_TO_LDAP_GRP LG ON LD.ID = LG.LDAP_GRP_ID WHERE ID =?", LdapId);
+            while (rs.next()) {
+                rs.getString("LDAP_GRP_ID");
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public String getLinkImage(int i) {
+
+        ResultSet rs;
+
+        try {
+            rs = onQuery("SELECT URL FROM ICON WHERE ID =?", i);
+            rs.next();
+            return rs.getString("URL");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Failed onQuery");
+            return "";
+        }
+    }
+
 }
