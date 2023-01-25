@@ -16,8 +16,9 @@ import de.rub.springwebapplication.Tabs.ItemUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-@Route("")
+import java.sql.SQLException;
 
+@Route("")
 public class MitabeiterView extends Div {
     public DatabaseUtils dataBaseUtils;
     public ItemUtils tab_item;
@@ -39,10 +40,9 @@ public class MitabeiterView extends Div {
         tabs.addSelectedChangeListener(event -> setContent(event.getSelectedTab()));
         setContent(tabs.getSelectedTab());
         add(tabs, content);
+
     }
-
     private void setContent(@NotNull Tab tab) {
-
 
         content.removeAll();
 
@@ -111,7 +111,7 @@ public class MitabeiterView extends Div {
             Icon_item.addClickListener(e -> {
                 try {
                     tab_item.Icon();
-                } catch (IOException ex) {
+                } catch (IOException | SQLException ex) {
                     throw new RuntimeException(ex);
                 }
             });

@@ -11,6 +11,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
@@ -22,11 +23,19 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
+import com.vaadin.flow.server.StreamResource;
 import de.rub.springwebapplication.Data.DatabaseUtils;
 import de.rub.springwebapplication.Listen.*;
+import net.coobird.thumbnailator.Thumbnails;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +44,21 @@ import static java.lang.Integer.parseInt;
 public class ItemUtils {
 
     public DatabaseUtils dataBaseUtils;
+
+    private StreamResource createImageResource(Blob blob) {
+        byte[] byteArray = null;
+        try {
+            byteArray = blob.getBytes(1, (int) blob.length());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        byte[] finalByteArray = byteArray;
+        return new StreamResource("image.png", () -> {
+            assert finalByteArray != null;
+            return new ByteArrayInputStream(finalByteArray);
+        });
+    }
 
     public void Infobox() throws IOException {
 
@@ -188,7 +212,12 @@ public class ItemUtils {
         List<dbIcon> dbIcons_list = dataBaseUtils.getIconImage();
         List<Link_Tile> link_tiles_list = dataBaseUtils.getInfo_Link_Tile();
         List<Tile_Column> tileColumn_list = dataBaseUtils.getInfo_Tile_Column();
-
+        List<Icon> icons;
+        try {
+            icons = dataBaseUtils.Icon();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         MenuBar Settings = new MenuBar();Settings.addThemeVariants(MenuBarVariant.LUMO_ICON, MenuBarVariant.LUMO_TERTIARY_INLINE, MenuBarVariant.LUMO_LARGE);
         MenuItem item = Settings.addItem(VaadinIcon.COG.create());
         SubMenu subMenu = item.getSubMenu();
@@ -227,7 +256,14 @@ public class ItemUtils {
         TextField tf1 = new TextField("Name");tf1.setWidthFull();
         TextField tf5 = new TextField("Beschreibung");tf5.setWidthFull();
 
-        ComboBox<dbIcon> tf2 = new ComboBox<>("Symbol");tf2.setItems(dbIcons_list);tf2.setItemLabelGenerator(dbIcon::getId);tf2.setWidthFull();
+        ComboBox<de.rub.springwebapplication.Listen.Icon> IconBox = new ComboBox<>("Symbol");IconBox.setItems(icons);IconBox.setItemLabelGenerator(Icon::getId);IconBox.setWidthFull();
+
+        IconBox.setRenderer(new ComponentRenderer<>(event -> {
+
+            StreamResource resource = createImageResource(event.getIconData());
+            return new Image(resource, "Image not found");
+
+        }));
 
         ComboBox<Link_Tile> tf3 = new ComboBox<>("Kachel");tf3.setItems(link_tiles_list);tf3.setItemLabelGenerator(Link_Tile::getName);tf3.setWidthFull();
 
@@ -246,7 +282,8 @@ public class ItemUtils {
         VerticalLayout createTileDialogLayout = new VerticalLayout(textFieldTile, textFieldTile1, textFieldTile2, textFieldTile3);createTileDialogLayout.setPadding(false);createTileDialogLayout.setSpacing(false);createTileDialogLayout.setWidthFull();createTileDialogLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.BASELINE);
 
         NumberField textField3 = new NumberField("Sort(Number Only)");textField3.setWidthFull();
-        NumberField textField8 = new NumberField("Authenticator Level");textField8.setWidthFull();ComboBox<Ldap> LdapField = new ComboBox<>("Ldap Group");LdapField.setItems(ldap_grp_list);LdapField.setItemLabelGenerator(Ldap::getContent);LdapField.setWidthFull();
+        NumberField textField8 = new NumberField("Authenticator Level");textField8.setWidthFull();
+        ComboBox<Ldap> LdapField = new ComboBox<>("Ldap Group");LdapField.setItems(ldap_grp_list);LdapField.setItemLabelGenerator(Ldap::getContent);LdapField.setWidthFull();
         ComboBox<Link_grp> textField2 = new ComboBox<>("Link Group");textField2.setItems(link_grp_list);textField2.setItemLabelGenerator(Link_grp::getGrp_Linktext);textField2.setWidthFull();
         ComboBox<Link> textField5 = new ComboBox<>("Vorhandenen Link auswählen");textField5.setItems(list);textField5.setItemLabelGenerator(Link::getUrl_active);textField5.setAllowCustomValue(false);textField5.setWidthFull();
         Checkbox textField6 = new Checkbox();textField6.setLabel("URL Inaktiv");textField6.setWidthFull();
@@ -260,7 +297,7 @@ public class ItemUtils {
         HorizontalLayout Ldap_Grp = new HorizontalLayout(LdapField, createLdapField, ReturnCreateLdap, createLdap);Ldap_Grp.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);Ldap_Grp.setWidthFull();
         HorizontalLayout createLayoutFooter = new HorizontalLayout(saveButtonLink, cancelButton1);
         HorizontalLayout linktile = new HorizontalLayout(tf3, createTile);linktile.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);linktile.setWidthFull();
-        HorizontalLayout Icon = new HorizontalLayout(tf2, createIcon);Icon.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);Icon.setWidthFull();
+        HorizontalLayout Icon = new HorizontalLayout(IconBox, createIcon);Icon.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);Icon.setWidthFull();
         VerticalLayout dialogLayout = new VerticalLayout(textField1, LinkGroup, Ldap_Grp, Link, textField3, textField4, textField8, Checkbox);dialogLayout.setPadding(false);dialogLayout.setSpacing(false);dialogLayout.setWidthFull();
         VerticalLayout createLinkGroupDialogLayout = new VerticalLayout(tf1, tf5, linktile, Icon, tf4);createLinkGroupDialogLayout.setPadding(false);createLinkGroupDialogLayout.setSpacing(false);createLinkGroupDialogLayout.setWidthFull();createLinkGroupDialogLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.BASELINE);
         Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();gridDialog.setCloseOnEsc(false);
@@ -281,6 +318,7 @@ public class ItemUtils {
         Link_grid.setItems(list);
         Link_grid.addColumn(TemplateRenderer.<de.rub.springwebapplication.Listen.Link>of("<a href='[[item.link]]' target='_blank'>[[item.link]]</a>")
                         .withProperty("link", de.rub.springwebapplication.Listen.Link::getUrl_active))
+
                 .setHeader("Link").setHeader("Link");
 
         cancelButton.addClickListener(Click -> {
@@ -289,7 +327,6 @@ public class ItemUtils {
         closeButton.addClickListener(Click -> {
             gridDialog.close();deleteDialog.close();editDialog.close();createDialog.close();
         });
-
         createLinkGroup.addClickListener(click -> {
             createLinkGroupDialog.open();
             createDialog.close();
@@ -313,7 +350,48 @@ public class ItemUtils {
             createLinkGroupDialog.close();
             createDialogTile.open();
         });
-        createIcon.addClickListener(click -> createLinkGroupDialog.close());
+        createIcon.addClickListener(click -> {
+            Dialog IconDialog = new Dialog();IconDialog.setWidthFull();
+            IconDialog.open();
+            try {
+                dataBaseUtils = new DatabaseUtils();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            Grid<Icon> IconGrid = new Grid<>();
+            IconGrid.addColumn(de.rub.springwebapplication.Listen.Icon::getId).setHeader("ID");
+            IconGrid.addColumn(de.rub.springwebapplication.Listen.Icon::getContentType).setHeader("Content Type");
+            IconGrid.addComponentColumn(icon -> {
+                StreamResource resource = createImageResource(icon.getIconData());
+                return new Image(resource, "Image not found");
+            }).setHeader("Icon");
+
+            IconGrid.setItems(icons);
+            Upload upload = new Upload();
+            upload.setAcceptedFileTypes(".png");
+            upload.setMaxFiles(1);
+            upload.setMaxFileSize(1048576);
+            IconDialog.add(upload, IconGrid);
+
+            MyReceiver receiver = new MyReceiver();
+            upload.setReceiver(receiver);
+            upload.addSucceededListener(event -> {
+                createLinkGroupDialog.close();
+                IconDialog.close();
+                Notification.show("Icon wurde Hinzugefügt").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+
+                String contentType = event.getFileName();
+                byte[] iconData = receiver.getIconData();
+                try {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    Thumbnails.of(new ByteArrayInputStream(iconData)).size(30, 30).outputFormat("png").toOutputStream(outputStream);
+                    dataBaseUtils.saveToDB(outputStream.toByteArray(), contentType);
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+        });
 
         ReturnCreateLink.addClickListener(click -> {
             textField5.setVisible(true);
@@ -359,9 +437,6 @@ public class ItemUtils {
                     if (LdapField.isEmpty()) {
                         dataBaseUtils.addNewIdAndName_Link_without(textField1.getValue(), String.valueOf(textField2.getValue().getId()), textField3.getValue(), textField4.getValue(), createLinkField.getValue(), textField6.getValue(), textField7.getValue(), textField8.getValue(), textField9.getValue());
 
-
-
-
                     } else {
                         int l = parseInt(LdapField.getValue().getId());
 
@@ -393,7 +468,7 @@ public class ItemUtils {
             if (tf1.isEmpty()) {
                 tf1.setValue("N/A");
             }
-            if (tf2.isEmpty()) {
+            if (IconBox.isEmpty()) {
                 return;
             }
             if (tf4.isEmpty()) {
@@ -402,10 +477,11 @@ public class ItemUtils {
             if (tf5.isEmpty()) {
                 tf5.setValue("N/A");
             }
-            dataBaseUtils.addNewIdAndName_Link_Grp(tf1.getValue(), Double.valueOf(String.valueOf(tf2.getValue().getId())), Double.valueOf(String.valueOf(tf3.getValue().getId())), tf4.getValue(), tf5.getValue());
+            dataBaseUtils.addNewIdAndName_Link_Grp(tf1.getValue(), Double.valueOf(String.valueOf(IconBox.getValue().getId())),Double.valueOf(String.valueOf(tf3.getValue().getId())), tf4.getValue(), tf5.getValue());
             gridDialog.close();createLinkGroupDialog.close();deleteDialog.close();editDialog.close();createDialog.open();
             Notification.show("Erfolgreich Gespeichert", 5000, Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_SUCCESS, NotificationVariant.LUMO_PRIMARY);
             textField2.getDataProvider().refreshAll();
+            System.out.println(Double.valueOf(String.valueOf(IconBox.getValue().getId())));
         });
         saveButtonTile1.addClickListener(click -> {
             if (textFieldTile.isEmpty()) {
@@ -954,33 +1030,47 @@ public class ItemUtils {
         });
         gridDialog.add(heading, tools, LinkTile_grid);
     }
-    public void Icon() throws IOException {
-
+    public void Icon() throws IOException, SQLException {
+        Dialog IconDialog = new Dialog();IconDialog.setWidthFull();
+        IconDialog.open();
         dataBaseUtils = new DatabaseUtils();
 
-        Grid<dbIcon> Icon_grid = new Grid<>();
-        List<dbIcon> dbIcon = dataBaseUtils.getIconImage();
-        H2 H2 = new H2("Verzeichnis-Liste: Link Tile");H2.getStyle().set("margin", "0 auto 0 0");
-        Button cancelButton = new Button("Nein, Abbrechen");cancelButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        Button closeButton = new Button(VaadinIcon.CLOSE.create());closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ERROR);
-        Button maximizeButton = new Button(VaadinIcon.VIEWPORT.create());maximizeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);maximizeButton.addClickListener(Click -> Icon_grid.setAllRowsVisible(true));
-        Button minimizeButton = new Button(VaadinIcon.RESIZE_H.create());minimizeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);minimizeButton.addClickListener(Click -> Icon_grid.setAllRowsVisible(false));
-        NumberField tf3 = new NumberField("Sort");tf3.setWidthFull();
-        HorizontalLayout heading = new HorizontalLayout(H2, minimizeButton, maximizeButton, closeButton);heading.setAlignItems(FlexComponent.Alignment.CENTER);
-        Dialog gridDialog = new Dialog();gridDialog.open();gridDialog.setCloseOnOutsideClick(false);gridDialog.setWidthFull();gridDialog.getFooter().add();
-        Dialog deleteDialog = new Dialog();deleteDialog.setHeaderTitle("Verzeichnis Löschen ?");deleteDialog.setCloseOnOutsideClick(false);deleteDialog.add("Dieser Vorgang kann nicht Rückgänig gemacht werden !");deleteDialog.getFooter().add(cancelButton);deleteDialog.setWidth(60, Unit.PERCENTAGE);
+        Grid<Icon> IconGrid = new Grid<>();
+        List<Icon> icons;
+        try {
+            icons = dataBaseUtils.Icon();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        IconGrid.addColumn(Icon::getId).setHeader("ID");
+        IconGrid.addColumn(Icon::getContentType).setHeader("Content Type");
+        IconGrid.addComponentColumn(icon -> {
+            StreamResource resource = createImageResource(icon.getIconData());
+            return new Image(resource, "Image not found");
+        }).setHeader("Icon");
 
+        IconGrid.setItems(icons);
+        Upload upload = new Upload();
+        upload.setAcceptedFileTypes(".png");
+        upload.setMaxFiles(1);
+        upload.setMaxFileSize(1048576);
+        IconDialog.add(upload, IconGrid);
 
-        Icon_grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT, GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_COLUMN_BORDERS);
-        Icon_grid.addColumn(de.rub.springwebapplication.Listen.dbIcon::getId).setHeader("Id");
-        Icon_grid.addColumn(de.rub.springwebapplication.Listen.dbIcon::getContentType).setHeader("Contenttype");
-        Icon_grid.setItems(dbIcon);
+        MyReceiver receiver = new MyReceiver();
+        upload.setReceiver(receiver);
+        upload.addSucceededListener(event -> {
+            IconDialog.close();
+            Notification.show("Icon wurde Hinzugefügt").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 
-        cancelButton.addClickListener(Click -> deleteDialog.close());
-        closeButton.addClickListener(Click -> {
-            gridDialog.close();deleteDialog.close();
+            String contentType = event.getFileName();
+            byte[] iconData = receiver.getIconData();
+            try {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                Thumbnails.of(new ByteArrayInputStream(iconData)).size(30, 30).outputFormat("png").toOutputStream(outputStream);
+                dataBaseUtils.saveToDB(outputStream.toByteArray(), contentType);
+            } catch (IOException | SQLException e) {
+                e.printStackTrace();
+            }
         });
-        gridDialog.add(heading, Icon_grid);
-
     }
 }

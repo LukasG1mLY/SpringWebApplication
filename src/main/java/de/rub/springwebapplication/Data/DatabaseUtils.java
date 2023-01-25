@@ -1,9 +1,9 @@
 package de.rub.springwebapplication.Data;
 
 import de.rub.springwebapplication.Listen.*;
+import de.rub.springwebapplication.Listen.Icon;
 import org.ini4j.Wini;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Blob;
@@ -245,7 +245,7 @@ public class DatabaseUtils extends SQLUtils {
             ResultSet rs = onQuery("SELECT MAX(ID) FROM LINK_GRP ORDER BY ID");
             rs.next();
             int newId = rs.getInt("MAX(ID)") + 1;
-            onExecute("INSERT INTO LINK_GRP VALUES(?,?,?,?,?,?)", newId, pGrp_Linktext, pIcon_Id, pTile_Id, pSort, pDescription);
+            onExecute("INSERT INTO LINK_GRP VALUES(?,?,?,?,?)", newId, pGrp_Linktext, pIcon_Id, pTile_Id, pSort, pDescription);
             System.out.println("Die ID: " + newId + " wurde zum verzeichnis Hinzugefügt.");
         }
         catch (Exception e) {
@@ -443,5 +443,47 @@ public class DatabaseUtils extends SQLUtils {
             return "";
         }
     }
+
+    public List<Icon> Icon() throws SQLException {
+        ResultSet rs = onQuery("SELECT ID, CONTENTTYPE, ICON FROM ICON");
+        List<Icon> icons = new ArrayList<>();
+        try {
+            while (rs.next()) {
+                String id = rs.getString("ID");
+                String contentType = rs.getString("CONTENTTYPE");
+                Blob iconData = rs.getBlob("ICON");
+                Icon icon = new Icon(id, contentType, iconData);
+                icons.add(icon);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return icons;
+    }
+
+    public void saveToDB(byte[] iconData, String contentType) throws SQLException {
+        // Get the next ID for the new row
+        ResultSet rs = onQuery("SELECT MAX(ID) FROM ICON");
+        long nextId = 1;
+        try {
+            if (rs.next()) {
+                nextId = rs.getLong(1) + 1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Insert the data into the database
+        try {
+            onExecute("INSERT INTO ICON (ID, ICON, CONTENTTYPE) VALUES (?, ?, ?)", nextId, iconData, contentType);
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+
+
+        }
+    }
+
+
 
 }
